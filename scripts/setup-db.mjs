@@ -8,9 +8,16 @@
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import pg from "pg";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+
+const pg = await import("pg").then(
+  (module) => module.default,
+  () => {
+    console.error("Falta a dependência 'pg'. Rode `npm install` e tente de novo.");
+    process.exit(1);
+  },
+);
 
 // ------------------------------------------------------------------ config
 
