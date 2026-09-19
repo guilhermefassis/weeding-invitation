@@ -1,0 +1,117 @@
+export type PageKind =
+  | "cover"
+  | "menu"
+  | "content"
+  | "gallery"
+  | "rsvp"
+  | "location"
+  | "gift"
+  | "closing";
+
+export type BackgroundKind = "image" | "video" | "color";
+
+export type MenuIcon =
+  | "location"
+  | "gift"
+  | "rsvp"
+  | "dresscode"
+  | "guide"
+  | "gallery"
+  | "heart";
+
+export type MenuItem = {
+  icon: MenuIcon;
+  label: string;
+  /** Página de destino, pelo `kind` ou pelo id. */
+  target: string;
+};
+
+export type GalleryItem = {
+  url: string;
+  kind: "image" | "video";
+  caption?: string;
+};
+
+export type PageConfig = {
+  items?: MenuItem[];
+  gallery?: GalleryItem[];
+  align?: "center" | "bottom";
+  [key: string]: unknown;
+};
+
+export type InvitePage = {
+  id: string;
+  position: number;
+  kind: PageKind;
+  is_visible: boolean;
+  eyebrow: string | null;
+  title: string | null;
+  subtitle: string | null;
+  body: string | null;
+  background_url: string | null;
+  background_kind: BackgroundKind;
+  overlay: number;
+  config: PageConfig;
+};
+
+export type Theme = {
+  ink?: string;
+  paper?: string;
+  accent?: string;
+  muted?: string;
+};
+
+export type EventRecord = {
+  id: string;
+  slug: string;
+  couple_names: string;
+  monogram: string | null;
+  title: string;
+  blessing_line: string | null;
+  event_date: string;
+  venue_name: string | null;
+  venue_address: string | null;
+  venue_maps_url: string | null;
+  venue_lat: number | null;
+  venue_lng: number | null;
+  music_url: string | null;
+  theme: Theme;
+  pix_key: string | null;
+  pix_key_owner: string | null;
+  pix_city: string | null;
+  pix_suggestions: number[];
+  whatsapp_template: string | null;
+  base_url: string | null;
+};
+
+export type GuestStatus = "pending" | "confirmed" | "declined";
+
+export type Guest = {
+  id: string;
+  name: string;
+  is_child: boolean;
+  position: number;
+  status: GuestStatus;
+};
+
+export type InviteStatus = "pending" | "sent" | "failed";
+
+export type Household = {
+  id: string;
+  event_id: string;
+  slug: string;
+  family_name: string;
+  greeting: string | null;
+  phone: string | null;
+  note: string | null;
+  invite_status: InviteStatus;
+  invite_sent_at: string | null;
+  responded_at: string | null;
+  guests: Guest[];
+};
+
+export type Invite = {
+  event: EventRecord;
+  pages: InvitePage[];
+  household: Household | null;
+};
