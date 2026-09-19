@@ -92,7 +92,16 @@ npm run dev:webpack
 ```
 
 Mesmo app, mesmo resultado — só o empacotador muda, e o start fica um pouco
-mais lento. Se acontecer, vale apagar `.next` antes de tentar de novo.
+mais lento. Se acontecer, vale apagar `.next` antes de tentar de novo. O mesmo
+vale para o build: `npm run build:webpack`.
+
+### Se o dev server encerrar sozinho logo depois do "Ready"
+
+Roda em modo produção, que não depende do observador de arquivos:
+
+```bash
+npm run build:webpack && npm start
+```
 
 ### Ligando o Supabase
 
