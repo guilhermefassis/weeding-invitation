@@ -22,16 +22,35 @@ const pg = await import("pg").then(
 // ------------------------------------------------------------------ config
 
 async function loadEnv() {
+  let raw;
   try {
-    const raw = await readFile(join(root, ".env.local"), "utf8");
-    for (const line of raw.split("\n")) {
-      const match = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)$/);
-      if (!match) continue;
-      const value = match[2].trim().replace(/^["']|["']$/g, "").replace(/\s+#.*$/, "");
-      if (!process.env[match[1]]) process.env[match[1]] = value;
-    }
+    raw = await readFile(join(root, ".env.local"), "utf8");
   } catch {
-    // Sem .env.local: as variáveis podem vir do ambiente.
+    return; // Sem .env.local: as variáveis podem vir do ambiente.
+  }
+
+  const fromFile = new Map();
+  const duplicates = new Set();
+
+  for (const line of raw.split("\n")) {
+    const match = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)$/);
+    if (!match) continue;
+
+    const value = match[2].trim().replace(/^["']|["']$/g, "").replace(/\s+#.*$/, "");
+    // Linha repetida costuma vir de um `>>` depois de um valor de exemplo:
+    // a última é a que a pessoa acabou de escrever.
+    if (fromFile.has(match[1])) duplicates.add(match[1]);
+    fromFile.set(match[1], value);
+  }
+
+  if (duplicates.size > 0) {
+    console.log(
+      `! .env.local tem linhas repetidas (${[...duplicates].join(", ")}); usando a última de cada.`,
+    );
+  }
+
+  for (const [key, value] of fromFile) {
+    if (!process.env[key]) process.env[key] = value;
   }
 }
 
@@ -280,6 +299,16 @@ async function main() {
 
   // Preferimos HTTPS quando há token: não depende da rede alcançar o Postgres.
   if (process.env.SUPABASE_ACCESS_TOKEN) {
+    const token = process.env.SUPABASE_ACCESS_TOKEN;
+    if (!token.startsWith("sbp_")) {
+      console.error(
+        `✗ SUPABASE_ACCESS_TOKEN não parece um token pessoal: "${token.slice(0, 12)}…"\n\n` +
+          "Ele começa com sbp_ e sai de https://supabase.com/dashboard/account/tokens\n" +
+          "Confira se não sobrou uma linha de exemplo no .env.local.",
+      );
+      process.exit(1);
+    }
+
     try {
       await applySetup(createHttpClient(process.env.SUPABASE_ACCESS_TOKEN, ref));
     } catch (error) {
