@@ -138,6 +138,39 @@ async function runSql(client, file) {
   await client.query(sql);
 }
 
+/**
+ * Caminho por HTTPS: roda SQL pela API de gerenciamento, sem depender de
+ * conexão Postgres — o que contorna pooler, região e redes sem IPv6.
+ */
+function createHttpClient(token, ref) {
+  return {
+    async query(sql) {
+      const response = await fetch(
+        `https://api.supabase.com/v1/projects/${ref}/database/query`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ query: sql }),
+        },
+      );
+
+      const body = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        const message =
+          body?.message ?? body?.error ?? `HTTP ${response.status}`;
+        throw new Error(message);
+      }
+
+      return { rows: Array.isArray(body) ? body : [] };
+    },
+    async end() {},
+  };
+}
+
 async function createBucket(client) {
   await client.query(`
     insert into storage.buckets (id, name, public)
@@ -179,12 +212,90 @@ function report(label, status, detail) {
   console.log(`${mark} ${label}${detail ? ` — ${detail}` : ""}`);
 }
 
+async function applySetup(client) {
+  try {
+    await runSql(client, "schema.sql");
+    report("Tabelas criadas", "ok");
+
+    await runSql(client, "seed.sql");
+    const { rows } = await client.query(
+      "select count(*)::int as total from invite_pages",
+    );
+    report("Conteúdo inicial", "ok", `${rows[0]?.total ?? "?"} páginas`);
+
+    try {
+      await createBucket(client);
+      report("Bucket de mídia 'convite'", "ok", "público");
+    } catch (error) {
+      report("Bucket de mídia", "aviso", `crie à mão no Storage (${error.message})`);
+    }
+  } finally {
+    await client.end();
+  }
+}
+
+async function setupAdminUser() {
+  const email = arg("email");
+  const password = arg("senha") ?? arg("password");
+
+  if (!email || !password) {
+    report(
+      "Usuário do painel",
+      "aviso",
+      "pulado; rode com --email voce@exemplo.com --senha suasenha",
+    );
+    return;
+  }
+
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    report("Usuário do painel", "aviso", "falta SUPABASE_SERVICE_ROLE_KEY");
+    return;
+  }
+
+  try {
+    const status = await createAdminUser(email, password);
+    report("Usuário do painel", "ok", `${email} ${status}`);
+  } catch (error) {
+    report("Usuário do painel", "erro", error.message);
+  }
+}
+
+function finish() {
+  console.log(
+    steps.includes("erro")
+      ? "\nTerminou com erros — veja as linhas marcadas com ✗."
+      : "\nPronto. Rode `npm run dev` e entre em /entrar.",
+  );
+}
+
 async function main() {
   await loadEnv();
 
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
     console.error("Falta NEXT_PUBLIC_SUPABASE_URL no .env.local.");
     process.exit(1);
+  }
+
+  const ref = projectRef(process.env.NEXT_PUBLIC_SUPABASE_URL);
+
+  // Preferimos HTTPS quando há token: não depende da rede alcançar o Postgres.
+  if (process.env.SUPABASE_ACCESS_TOKEN) {
+    try {
+      await applySetup(createHttpClient(process.env.SUPABASE_ACCESS_TOKEN, ref));
+    } catch (error) {
+      console.error(`✗ A API de gerenciamento recusou: ${error.message}\n`);
+      console.error(
+        /401|403/.test(error.message)
+          ? "O token é inválido, expirou, ou não é dono deste projeto.\n" +
+              "Gere outro em https://supabase.com/dashboard/account/tokens"
+          : "Confira se o projeto é o certo: " + ref,
+      );
+      process.exit(1);
+    }
+
+    await setupAdminUser();
+    finish();
+    return;
   }
 
   const connectionString = databaseUrl();
@@ -243,51 +354,9 @@ async function main() {
     await client.connect();
   }
 
-  try {
-    await runSql(client, "schema.sql");
-    report("Tabelas criadas", "ok");
-
-    await runSql(client, "seed.sql");
-    const { rows } = await client.query(
-      "select count(*)::int as total from invite_pages",
-    );
-    report("Conteúdo inicial", "ok", `${rows[0].total} páginas`);
-
-    try {
-      await createBucket(client);
-      report("Bucket de mídia 'convite'", "ok", "público");
-    } catch (error) {
-      report("Bucket de mídia", "aviso", `crie à mão no Storage (${error.message})`);
-    }
-  } finally {
-    await client.end();
-  }
-
-  const email = arg("email");
-  const password = arg("senha") ?? arg("password");
-
-  if (!email || !password) {
-    report(
-      "Usuário do painel",
-      "aviso",
-      "pulado; rode com --email voce@exemplo.com --senha suasenha",
-    );
-  } else if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    report("Usuário do painel", "aviso", "falta SUPABASE_SERVICE_ROLE_KEY");
-  } else {
-    try {
-      const status = await createAdminUser(email, password);
-      report("Usuário do painel", "ok", `${email} ${status}`);
-    } catch (error) {
-      report("Usuário do painel", "erro", error.message);
-    }
-  }
-
-  console.log(
-    steps.includes("erro")
-      ? "\nTerminou com erros — veja as linhas marcadas com ✗."
-      : "\nPronto. Rode `npm run dev` e entre em /entrar.",
-  );
+  await applySetup(client);
+  await setupAdminUser();
+  finish();
 }
 
 main().catch((error) => {

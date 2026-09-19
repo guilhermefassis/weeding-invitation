@@ -106,8 +106,11 @@ npm run build:webpack && npm start
 ### Ligando o Supabase
 
 1. Crie um projeto em [supabase.com](https://supabase.com).
-2. Copie `.env.example` para `.env.local` e preencha as chaves e a senha do banco.
-3. Rode o setup:
+2. Copie `.env.example` para `.env.local` e preencha as chaves.
+3. Gere um token pessoal em
+   [account/tokens](https://supabase.com/dashboard/account/tokens) e ponha em
+   `SUPABASE_ACCESS_TOKEN`.
+4. Rode o setup:
 
 ```bash
 npm run db:setup -- --email voce@exemplo.com --senha suasenha
@@ -118,9 +121,10 @@ convite, cria o bucket público `convite` para as mídias e cadastra o usuário 
 painel. É idempotente — rodar de novo não duplica nada, então serve também para
 aplicar mudanças de schema.
 
-Se a conexão falhar com erro de rede, sua internet é IPv4 e o Supabase só expõe
-IPv6 no acesso direto: pegue a string em *Settings → Database → Connection
-string → Transaction pooler* e ponha em `SUPABASE_DB_URL`.
+Com o token, o SQL vai pela API de gerenciamento, por HTTPS — sem depender de
+conexão direta ao Postgres, que em rede IPv4 esbarra no fato de o Supabase só
+publicar IPv6 nesse endereço. Quem preferir conectar no banco pode usar
+`SUPABASE_DB_PASSWORD` ou `SUPABASE_DB_URL` no lugar do token.
 
 As tabelas ficam com RLS ligado e sem policies: nada é lido direto do browser.
 Todo acesso passa pelo servidor Next usando a service role key.
