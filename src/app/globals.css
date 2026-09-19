@@ -85,7 +85,9 @@ body {
   inset: 0;
   transform-origin: left center;
   transform-style: preserve-3d;
-  transition: transform 720ms cubic-bezier(0.22, 0.61, 0.28, 1);
+  /* Curva simétrica: a folha cruza os 90° na metade do tempo, então a ida
+     (que só mostra a frente até os 90°) dura o mesmo que a volta. */
+  transition: transform 950ms cubic-bezier(0.65, 0, 0.35, 1);
   will-change: transform;
 }
 

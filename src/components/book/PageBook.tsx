@@ -29,7 +29,7 @@ export function useBook(): BookApi {
 
 const DRAG_THRESHOLD = 0.28;
 /** Mesma duração da transição em .leaf (globals.css). */
-const FLIP_MS = 720;
+const FLIP_MS = 950;
 
 function isInteractive(target: EventTarget | null): boolean {
   return (
