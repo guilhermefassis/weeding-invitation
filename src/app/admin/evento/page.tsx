@@ -13,6 +13,14 @@ function toLocalInput(iso: string): string {
   return parts.replace(" ", "T");
 }
 
+/** ISO -> valor aceito pelo input date, no fuso de São Paulo. */
+function toDateInput(iso: string): string {
+  return new Intl.DateTimeFormat("sv-SE", {
+    timeZone: "America/Sao_Paulo",
+    dateStyle: "short",
+  }).format(new Date(iso));
+}
+
 function Field({
   label,
   name,
@@ -61,6 +69,13 @@ export default async function EventPage() {
             name="event_date"
             type="datetime-local"
             defaultValue={toLocalInput(event.event_date)}
+          />
+          <Field
+            label="Prazo de confirmação"
+            name="rsvp_deadline"
+            type="date"
+            defaultValue={event.rsvp_deadline ? toDateInput(event.rsvp_deadline) : ""}
+            hint="Depois desta data quem não respondeu conta como ausente"
           />
           <Field label="Música de fundo (URL)" name="music_url" defaultValue={event.music_url} />
         </div>

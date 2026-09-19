@@ -47,7 +47,14 @@ export function InviteBook({ invite }: { invite: Invite }) {
               case "gallery":
                 return <GalleryPage key={page.id} page={page} />;
               case "rsvp":
-                return <RsvpPage key={page.id} page={page} household={household} />;
+                return (
+                  <RsvpPage
+                    key={page.id}
+                    page={page}
+                    household={household}
+                    deadline={event.rsvp_deadline}
+                  />
+                );
               case "location":
                 return <LocationPage key={page.id} page={page} event={event} />;
               case "gift":

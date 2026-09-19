@@ -22,5 +22,12 @@ export async function POST(request: Request) {
   }
 
   const result = await saveRsvp(parsed.data);
-  return NextResponse.json({ ok: true, ...result });
+  if (!result.ok) {
+    return NextResponse.json(
+      { error: "O prazo de confirmação já encerrou." },
+      { status: 409 },
+    );
+  }
+
+  return NextResponse.json(result);
 }

@@ -32,6 +32,12 @@ function toTimestamp(value: string | null): string | null {
   return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value) ? `${value}:00-03:00` : value;
 }
 
+/** O prazo vale até o fim do dia escolhido. */
+function toDeadline(value: string | null): string | null {
+  if (!value) return null;
+  return /^\d{4}-\d{2}-\d{2}$/.test(value) ? `${value}T23:59:59-03:00` : value;
+}
+
 async function uploadMedia(file: File, prefix: string): Promise<string> {
   const supabase = createAdminClient();
   const extension = file.name.split(".").pop()?.toLowerCase() ?? "bin";
@@ -68,6 +74,7 @@ export async function updateEvent(form: FormData) {
       title: text(form, "title"),
       blessing_line: text(form, "blessing_line"),
       event_date: toTimestamp(text(form, "event_date")),
+      rsvp_deadline: toDeadline(text(form, "rsvp_deadline")),
       venue_name: text(form, "venue_name"),
       venue_address: text(form, "venue_address"),
       venue_maps_url: text(form, "venue_maps_url"),

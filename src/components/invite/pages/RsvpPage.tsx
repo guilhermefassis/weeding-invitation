@@ -2,14 +2,16 @@
 
 import { useState } from "react";
 import type { GuestStatus, Household, InvitePage } from "@/lib/types";
+import { formatDeadline, isRsvpClosed } from "@/lib/rsvp";
 import { PageShell, hasMedia } from "../PageShell";
 
 type Props = {
   page: InvitePage;
   household: Household | null;
+  deadline: string | null;
 };
 
-export function RsvpPage({ page, household }: Props) {
+export function RsvpPage({ page, household, deadline }: Props) {
   const dark = hasMedia(page);
   const [answers, setAnswers] = useState<Record<string, GuestStatus>>(() =>
     Object.fromEntries(
@@ -18,13 +20,14 @@ export function RsvpPage({ page, household }: Props) {
   );
   const [note, setNote] = useState(household?.note ?? "");
   const [state, setState] = useState<"idle" | "saving" | "done" | "error">("idle");
+  const closed = isRsvpClosed(deadline);
 
   const guests = household?.guests ?? [];
   const answered = guests.filter((guest) => answers[guest.id] !== "pending").length;
   const confirmed = guests.filter((guest) => answers[guest.id] === "confirmed").length;
 
   async function submit() {
-    if (!household) return;
+    if (!household || closed) return;
     setState("saving");
     try {
       const response = await fetch("/api/rsvp", {
@@ -87,9 +90,30 @@ export function RsvpPage({ page, household }: Props) {
             {page.body}
           </p>
         )}
+        {deadline && !closed && (
+          <p
+            className={`display mt-3 text-[0.8rem] tracking-[0.18em] uppercase ${
+              dark ? "text-white/70" : "text-accent"
+            }`}
+          >
+            Confirme até {formatDeadline(deadline)}
+          </p>
+        )}
       </header>
 
-      {state === "done" ? (
+      {closed ? (
+        <div className="flex flex-1 flex-col items-center justify-center text-center">
+          <p className="script text-[2.4rem] text-accent">Prazo encerrado</p>
+          <p
+            className={`display mt-3 max-w-[20rem] text-[1rem] ${
+              dark ? "text-white/85" : "text-ink-soft"
+            }`}
+          >
+            As confirmações se encerraram em {formatDeadline(deadline!)}. Se
+            precisar ajustar alguma coisa, fale direto com os anfitriões.
+          </p>
+        </div>
+      ) : state === "done" ? (
         <div className="flex flex-1 flex-col items-center justify-center text-center">
           <p className="script text-[2.6rem] text-accent">Obrigado!</p>
           <p

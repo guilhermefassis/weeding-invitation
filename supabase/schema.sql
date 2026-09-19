@@ -12,6 +12,7 @@ create table if not exists events (
   title text not null,
   blessing_line text,
   event_date timestamptz not null,
+  rsvp_deadline timestamptz,
   venue_name text,
   venue_address text,
   venue_maps_url text,

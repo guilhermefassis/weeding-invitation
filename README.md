@@ -41,6 +41,12 @@ O link único identifica a família, então o convidado não digita nada: ele v�
 os nomes já cadastrados e marca "vou / não vou" para cada um. Pode voltar no
 mesmo link depois para alterar.
 
+Existe um **prazo de confirmação** (`/admin/evento`). Até lá, a página mostra
+"confirme até 30 de novembro". Depois do prazo o formulário fecha — inclusive
+no servidor, então não adianta tentar por fora — e quem não respondeu passa a
+contar como ausente no painel. A resposta original continua guardada: o painel
+diferencia "não vai" de "não respondeu no prazo".
+
 ### Presente via PIX
 
 O BR Code é gerado no próprio app (`src/lib/pix.ts`), sem gateway e sem taxa:
@@ -83,6 +89,18 @@ convite com conteúdo de exemplo e nada é gravado.
 
 As tabelas ficam com RLS ligado e sem policies: nada é lido direto do browser.
 Todo acesso passa pelo servidor Next usando a service role key.
+
+## Testes
+
+```bash
+npm test          # unitários (vitest): PIX, prazo de RSVP, WhatsApp, datas, slugs
+npm run test:e2e  # ponta a ponta (playwright): o convite inteiro num celular
+```
+
+O e2e sobe o dev server sozinho e navega como um convidado de verdade: folheia
+o livro, confirma a família, gera e copia o PIX, testa os links de rota e
+confere que o painel exige login. Na primeira vez, rode `npx playwright install
+chromium` para baixar o navegador.
 
 ## Deploy
 

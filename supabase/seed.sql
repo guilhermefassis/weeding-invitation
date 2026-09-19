@@ -2,15 +2,16 @@
 -- Ajuste os valores aqui ou depois pelo painel (/admin/evento).
 
 insert into events (
-  slug, couple_names, monogram, title, blessing_line, event_date,
+  slug, couple_names, monogram, title, blessing_line, event_date, rsvp_deadline,
   venue_name, venue_address, pix_key, pix_key_owner, pix_city, pix_suggestions
 ) values (
   'nossa-festa',
-  'Guilherme & Marina',
-  'GM',
+  'Guilherme & Fernanda',
+  'GF',
   'Bodas de Trigo',
   'Três anos depois do sim, a festa que faltava',
   '2026-12-12T19:00:00-03:00',
+  '2026-11-30T23:59:59-03:00',
   'Casa das Oliveiras',
   'Rua das Palmeiras, 120 — Itaipava, Petrópolis/RJ',
   null, null, 'Sao Paulo', '{50,100,200}'

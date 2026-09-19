@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getAdminEvent, listGiftMessages, listHouseholds } from "@/lib/admin-data";
 import { formatBRL } from "@/lib/pix";
+import { countGuests, formatDeadline, isRsvpClosed } from "@/lib/rsvp";
 
 export default async function AdminHome() {
   const event = await getAdminEvent();
@@ -23,20 +24,20 @@ export default async function AdminHome() {
   ]);
 
   const guests = households.flatMap((household) => household.guests);
+  const closed = isRsvpClosed(event.rsvp_deadline);
+  const counts = countGuests(guests, event.rsvp_deadline);
+
   const stats = [
     { label: "Famílias", value: households.length },
-    { label: "Convidados", value: guests.length },
+    { label: "Convidados", value: counts.total },
+    { label: "Confirmados", value: counts.confirmed },
     {
-      label: "Confirmados",
-      value: guests.filter((guest) => guest.status === "confirmed").length,
+      label: closed ? "Não vão (inclui sem resposta)" : "Recusaram",
+      value: counts.declined,
     },
     {
-      label: "Recusaram",
-      value: guests.filter((guest) => guest.status === "declined").length,
-    },
-    {
-      label: "Sem resposta",
-      value: guests.filter((guest) => guest.status === "pending").length,
+      label: closed ? "Não responderam a tempo" : "Sem resposta",
+      value: counts.silent,
     },
     {
       label: "Convites enviados",
@@ -53,6 +54,12 @@ export default async function AdminHome() {
         <h1 className="text-2xl font-medium">{event.couple_names}</h1>
         <p className="text-sm text-zinc-500">
           {event.title} ·{" "}
+          {event.rsvp_deadline
+            ? closed
+              ? `confirmações encerradas em ${formatDeadline(event.rsvp_deadline)}`
+              : `confirmações até ${formatDeadline(event.rsvp_deadline)}`
+            : "sem prazo de confirmação"}{" "}
+          ·{" "}
           <Link className="underline" href="/admin/evento">
             editar dados do evento
           </Link>

@@ -1,10 +1,11 @@
 import "server-only";
 import { createAdminClient, hasSupabase } from "./supabase/admin";
 import { demoInvite } from "./demo-data";
+import { isRsvpClosed } from "./rsvp";
 import type { EventRecord, GuestStatus, Household, Invite, InvitePage } from "./types";
 
 const EVENT_COLUMNS =
-  "id, slug, couple_names, monogram, title, blessing_line, event_date, venue_name, venue_address, venue_maps_url, venue_lat, venue_lng, music_url, theme, pix_key, pix_key_owner, pix_city, pix_suggestions, whatsapp_template, base_url";
+  "id, slug, couple_names, monogram, title, blessing_line, event_date, rsvp_deadline, venue_name, venue_address, venue_maps_url, venue_lat, venue_lng, music_url, theme, pix_key, pix_key_owner, pix_city, pix_suggestions, whatsapp_template, base_url";
 
 const PAGE_COLUMNS =
   "id, position, kind, is_visible, eyebrow, title, subtitle, body, background_url, background_kind, overlay, config";
@@ -101,16 +102,26 @@ export type RsvpInput = {
 };
 
 export async function saveRsvp({ householdSlug, answers, note }: RsvpInput) {
-  if (isDemoMode()) return { demo: true as const };
+  if (isDemoMode()) return { ok: true as const, demo: true as const };
 
   const supabase = createAdminClient();
   const { data: household, error } = await supabase
     .from("households")
-    .select("id")
+    .select("id, event_id")
     .eq("slug", householdSlug)
     .single();
 
   if (error) throw error;
+
+  const { data: event } = await supabase
+    .from("events")
+    .select("rsvp_deadline")
+    .eq("id", household.event_id)
+    .single();
+
+  if (isRsvpClosed(event?.rsvp_deadline ?? null)) {
+    return { ok: false as const, reason: "closed" as const };
+  }
 
   for (const answer of answers) {
     const { error: guestError } = await supabase
@@ -127,7 +138,7 @@ export async function saveRsvp({ householdSlug, answers, note }: RsvpInput) {
     .eq("id", household.id);
 
   if (householdError) throw householdError;
-  return { demo: false as const };
+  return { ok: true as const, demo: false as const };
 }
 
 export type GiftMessageInput = {

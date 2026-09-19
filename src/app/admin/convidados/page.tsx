@@ -6,6 +6,7 @@ import {
   renderTemplate,
 } from "@/lib/whatsapp";
 import { hasCloudApi } from "@/lib/whatsapp-cloud";
+import { isRsvpClosed, resolveGuestStatus } from "@/lib/rsvp";
 import { deleteHousehold, saveHousehold } from "../actions";
 import { HouseholdActions } from "./HouseholdActions";
 
@@ -14,6 +15,16 @@ const STATUS_LABEL = {
   confirmed: "vai",
   declined: "não vai",
 } as const;
+
+function guestLabel(
+  status: "pending" | "confirmed" | "declined",
+  deadline: string | null,
+): string {
+  if (status === "pending" && isRsvpClosed(deadline)) {
+    return "não vai (não respondeu no prazo)";
+  }
+  return STATUS_LABEL[status];
+}
 
 async function resolveBaseUrl(configured: string | null): Promise<string> {
   if (configured) return configured;
@@ -85,7 +96,8 @@ export default async function GuestsAdmin() {
         const link = inviteUrl(baseUrl, household.slug);
         const message = renderTemplate(template, event, household, baseUrl);
         const confirmed = household.guests.filter(
-          (guest) => guest.status === "confirmed",
+          (guest) =>
+            resolveGuestStatus(guest.status, event.rsvp_deadline) === "confirmed",
         ).length;
 
         return (
@@ -136,7 +148,7 @@ export default async function GuestsAdmin() {
                       key={guest.id}
                       className="rounded-full bg-zinc-100 px-3 py-1 text-zinc-600"
                     >
-                      {guest.name} · {STATUS_LABEL[guest.status]}
+                      {guest.name} · {guestLabel(guest.status, event.rsvp_deadline)}
                     </li>
                   ))}
                 </ul>

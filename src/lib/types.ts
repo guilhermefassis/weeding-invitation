@@ -69,6 +69,7 @@ export type EventRecord = {
   title: string;
   blessing_line: string | null;
   event_date: string;
+  rsvp_deadline: string | null;
   venue_name: string | null;
   venue_address: string | null;
   venue_maps_url: string | null;
