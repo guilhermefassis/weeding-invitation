@@ -48,7 +48,7 @@ create table if not exists invite_pages (
   config jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
-  unique (event_id, position) deferrable initially deferred
+  unique (event_id, position)
 );
 
 create index if not exists invite_pages_event_idx on invite_pages (event_id, position);

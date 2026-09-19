@@ -106,10 +106,21 @@ npm run build:webpack && npm start
 ### Ligando o Supabase
 
 1. Crie um projeto em [supabase.com](https://supabase.com).
-2. SQL Editor → rode `supabase/schema.sql` e depois `supabase/seed.sql`.
-3. Storage → crie um bucket **público** chamado `convite` (fotos e vídeos).
-4. Authentication → crie o usuário do painel (e-mail e senha).
-5. Copie `.env.example` para `.env.local` e preencha as chaves.
+2. Copie `.env.example` para `.env.local` e preencha as chaves e a senha do banco.
+3. Rode o setup:
+
+```bash
+npm run db:setup -- --email voce@exemplo.com --senha suasenha
+```
+
+Um comando faz tudo: cria as tabelas, insere o evento com as páginas do
+convite, cria o bucket público `convite` para as mídias e cadastra o usuário do
+painel. É idempotente — rodar de novo não duplica nada, então serve também para
+aplicar mudanças de schema.
+
+Se a conexão falhar com erro de rede, sua internet é IPv4 e o Supabase só expõe
+IPv6 no acesso direto: pegue a string em *Settings → Database → Connection
+string → Transaction pooler* e ponha em `SUPABASE_DB_URL`.
 
 As tabelas ficam com RLS ligado e sem policies: nada é lido direto do browser.
 Todo acesso passa pelo servidor Next usando a service role key.
