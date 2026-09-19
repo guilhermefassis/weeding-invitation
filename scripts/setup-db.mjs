@@ -157,6 +157,22 @@ async function runSql(client, file) {
   await client.query(sql);
 }
 
+/** Aplica um tema pronto de supabase/temas sobre o evento já existente. */
+async function applyTheme(client, name) {
+  if (!/^[a-z0-9-]+$/.test(name)) {
+    throw new Error(`Nome de tema inválido: ${name}`);
+  }
+
+  try {
+    await runSql(client, join("temas", `${name}.sql`));
+    report(`Tema "${name}" aplicado`, "ok");
+  } catch (error) {
+    report(`Tema "${name}"`, "erro", error.message);
+  } finally {
+    await client.end();
+  }
+}
+
 /**
  * Caminho por HTTPS: roda SQL pela API de gerenciamento, sem depender de
  * conexão Postgres — o que contorna pooler, região e redes sem IPv6.
@@ -296,6 +312,7 @@ async function main() {
   }
 
   const ref = projectRef(process.env.NEXT_PUBLIC_SUPABASE_URL);
+  const tema = arg("tema");
 
   // Preferimos HTTPS quando há token: não depende da rede alcançar o Postgres.
   if (process.env.SUPABASE_ACCESS_TOKEN) {
@@ -309,8 +326,16 @@ async function main() {
       process.exit(1);
     }
 
+    const httpClient = createHttpClient(process.env.SUPABASE_ACCESS_TOKEN, ref);
+
+    if (tema) {
+      await applyTheme(httpClient, tema);
+      finish();
+      return;
+    }
+
     try {
-      await applySetup(createHttpClient(process.env.SUPABASE_ACCESS_TOKEN, ref));
+      await applySetup(httpClient);
     } catch (error) {
       console.error(`✗ A API de gerenciamento recusou: ${error.message}\n`);
       console.error(
@@ -381,6 +406,12 @@ async function main() {
       ssl: { rejectUnauthorized: false },
     });
     await client.connect();
+  }
+
+  if (tema) {
+    await applyTheme(client, tema);
+    finish();
+    return;
   }
 
   await applySetup(client);

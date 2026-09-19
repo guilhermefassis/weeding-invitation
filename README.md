@@ -25,11 +25,21 @@ as iniciais do casal e uma etiqueta com o nome da família — a mesma saudaçã
 usada no WhatsApp. Um toque rompe o lacre e revela o livro. O envelope aparece
 sempre que houver monograma cadastrado; sem ele, o convite abre direto na capa.
 
-### Cores
+### Cores e temas
 
 Em `/admin/evento` dá para trocar as cinco cores do convite: destaque, papel,
 texto, envelope e lacre. Elas viram custom properties aplicadas na raiz do
 convite, então valem para tudo — filetes, ícones, botões e o lacre.
+
+Para trocar o clima inteiro de uma vez, `supabase/temas/` guarda temas prontos
+que mexem em cores e textos juntos:
+
+```bash
+npm run db:setup -- --tema country
+```
+
+Cada tema é um `.sql` que atualiza o evento e as páginas. Depois de aplicar, o
+painel continua mandando: qualquer ajuste manual sobrescreve o tema.
 
 ### Páginas do convite
 
