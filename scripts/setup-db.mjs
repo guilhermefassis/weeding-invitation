@@ -130,12 +130,20 @@ async function main() {
     await client.connect();
   } catch (error) {
     console.error(`✗ Não consegui conectar no banco: ${error.message}`);
-    console.error(
-      "\nSe o erro for de rede (ENETUNREACH/ETIMEDOUT), sua conexão é IPv4 e o\n" +
-        "Supabase só expõe IPv6 no acesso direto. Pegue a string do pooler em\n" +
-        "Settings > Database > Connection string > Transaction pooler e ponha em\n" +
-        "SUPABASE_DB_URL no .env.local.",
-    );
+
+    if (/ENETUNREACH|ETIMEDOUT|EHOSTUNREACH/.test(error.message)) {
+      const ref = projectRef(process.env.NEXT_PUBLIC_SUPABASE_URL);
+      console.error(
+        "\nSua rede é IPv4 e o Supabase só publica IPv6 no acesso direto.\n" +
+          "Use o pooler, que atende em IPv4:\n\n" +
+          `  1. Abra https://supabase.com/dashboard/project/${ref}/settings/database\n` +
+          "  2. Em Connection string, escolha Session pooler (porta 5432)\n" +
+          "  3. Ponha a string no .env.local, com a senha no lugar de [YOUR-PASSWORD]:\n\n" +
+          `     SUPABASE_DB_URL=postgresql://postgres.${ref}:SENHA@aws-0-REGIAO.pooler.supabase.com:5432/postgres\n\n` +
+          "Session pooler, não Transaction: o modo transação não aguenta o schema inteiro de uma vez.",
+      );
+    }
+
     process.exit(1);
   }
 
