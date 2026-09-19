@@ -79,6 +79,21 @@ npm run dev
 Sem `.env.local`, o app roda em **modo demonstração**: `/convite/demo` mostra o
 convite com conteúdo de exemplo e nada é gravado.
 
+Precisa de Node 20.9 ou mais novo (`node -v`).
+
+### Se o `npm run dev` quebrar com erro do Turbopack
+
+O Next 16 usa o Turbopack por padrão, e ele depende de binários nativos por
+plataforma. Quando ele falha (um panic logo no primeiro compile), rode com o
+bundler antigo:
+
+```bash
+npm run dev:webpack
+```
+
+Mesmo app, mesmo resultado — só o empacotador muda, e o start fica um pouco
+mais lento. Se acontecer, vale apagar `.next` antes de tentar de novo.
+
 ### Ligando o Supabase
 
 1. Crie um projeto em [supabase.com](https://supabase.com).
