@@ -1,47 +1,59 @@
 type OrnamentProps = {
   className?: string;
-  flip?: boolean;
 };
 
-/** Ramo botânico em linha — usado nos cantos das páginas de papel. */
-export function Ornament({ className, flip }: OrnamentProps) {
+/**
+ * Ramo de oliveira: folhas alternadas ao longo de um caule que se afina.
+ * Traço fino e desenho assimétrico — simetria perfeita é o que faz um
+ * ornamento parecer clipart.
+ */
+export function Ornament({ className }: OrnamentProps) {
   return (
-    <svg
-      viewBox="0 0 160 160"
-      className={className}
-      aria-hidden="true"
-      style={flip ? { transform: "scaleX(-1)" } : undefined}
-    >
-      <g
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.1"
-        strokeLinecap="round"
-        opacity="0.75"
-      >
-        <path d="M8 152C8 96 34 50 82 22" />
-        <path d="M24 128c14 4 28 1 38-9" />
-        <path d="M38 104c15 5 30 2 40-9" />
-        <path d="M56 78c14 6 29 4 40-6" />
-        <path d="M76 54c13 7 28 6 39-3" />
+    <svg viewBox="0 0 170 170" className={className} aria-hidden="true">
+      <g fill="none" stroke="currentColor" strokeLinecap="round">
+        <path d="M14 158C22 108 48 62 96 30" strokeWidth="0.9" opacity="0.8" />
+        <path d="M31 122c12 3 23-1 30-11" strokeWidth="0.7" opacity="0.55" />
+        <path d="M49 92c12 4 24 0 31-10" strokeWidth="0.7" opacity="0.55" />
+        <path d="M71 64c11 5 23 2 31-7" strokeWidth="0.7" opacity="0.55" />
       </g>
-      <g fill="currentColor" opacity="0.32">
-        <ellipse cx="30" cy="140" rx="9" ry="4.2" transform="rotate(-28 30 140)" />
-        <ellipse cx="44" cy="116" rx="9.5" ry="4.4" transform="rotate(-24 44 116)" />
-        <ellipse cx="62" cy="90" rx="10" ry="4.6" transform="rotate(-20 62 90)" />
-        <ellipse cx="82" cy="66" rx="10" ry="4.6" transform="rotate(-16 82 66)" />
-        <ellipse cx="104" cy="45" rx="9" ry="4.2" transform="rotate(-12 104 45)" />
+
+      <g fill="currentColor">
+        {[
+          { x: 26, y: 140, rx: 8.5, ry: 3.1, r: -34, o: 0.38 },
+          { x: 42, y: 132, rx: 7.2, ry: 2.7, r: 18, o: 0.26 },
+          { x: 44, y: 112, rx: 9.2, ry: 3.3, r: -28, o: 0.4 },
+          { x: 61, y: 106, rx: 7.6, ry: 2.8, r: 22, o: 0.26 },
+          { x: 62, y: 84, rx: 9.4, ry: 3.4, r: -22, o: 0.4 },
+          { x: 79, y: 79, rx: 7.8, ry: 2.9, r: 26, o: 0.26 },
+          { x: 84, y: 56, rx: 9, ry: 3.2, r: -16, o: 0.38 },
+          { x: 99, y: 49, rx: 7.4, ry: 2.7, r: 30, o: 0.24 },
+          { x: 104, y: 34, rx: 7.8, ry: 2.8, r: -10, o: 0.32 },
+        ].map((leaf, index) => (
+          <ellipse
+            key={index}
+            cx={leaf.x}
+            cy={leaf.y}
+            rx={leaf.rx}
+            ry={leaf.ry}
+            opacity={leaf.o}
+            transform={`rotate(${leaf.r} ${leaf.x} ${leaf.y})`}
+          />
+        ))}
       </g>
-      <g fill="currentColor" opacity="0.5">
-        <circle cx="96" cy="86" r="3.4" />
-        <circle cx="112" cy="70" r="2.4" />
-        <circle cx="104" cy="100" r="2" />
+
+      <g fill="currentColor" opacity="0.3">
+        <circle cx="53" cy="121" r="2.1" />
+        <circle cx="72" cy="94" r="1.7" />
+        <circle cx="93" cy="66" r="1.4" />
       </g>
     </svg>
   );
 }
 
-/** Monograma dentro de um anel fino. */
+/**
+ * Monograma: iniciais entre dois filetes, com um par de folhas embaixo.
+ * O anel duplo genérico dava ar de selo de certificado.
+ */
 export function Monogram({
   text,
   className,
@@ -51,33 +63,20 @@ export function Monogram({
 }) {
   return (
     <span className={className} aria-hidden="true">
-      <svg viewBox="0 0 120 120" width="100%" height="100%">
-        <circle
-          cx="60"
-          cy="60"
-          r="52"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="0.8"
-          opacity="0.45"
-        />
-        <circle
-          cx="60"
-          cy="60"
-          r="46"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="0.5"
-          opacity="0.25"
-        />
+      <svg viewBox="0 0 160 96" width="100%" height="100%">
+        <g stroke="currentColor" strokeWidth="0.7" strokeLinecap="round">
+          <line x1="8" y1="40" x2="48" y2="40" opacity="0.5" />
+          <line x1="112" y1="40" x2="152" y2="40" opacity="0.5" />
+        </g>
+
         <text
-          x="60"
-          y="60"
+          x="80"
+          y="42"
           textAnchor="middle"
           dominantBaseline="central"
           fill="currentColor"
           className="script"
-          fontSize="46"
+          fontSize="52"
         >
           {text}
         </text>

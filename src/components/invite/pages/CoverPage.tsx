@@ -9,6 +9,26 @@ type Props = {
   household: Household | null;
 };
 
+/**
+ * O "e" comercial da caligráfica é ambíguo; papelaria fina costuma resolver
+ * com uma serifada itálica menor entre os dois nomes.
+ */
+function CoupleNames({ names }: { names: string }) {
+  const parts = names.split(/\s*&\s*/);
+  if (parts.length !== 2) return <>{names}</>;
+
+  // Cada nome na sua linha, com o "e" comercial isolado entre eles.
+  return (
+    <>
+      <span className="block">{parts[0]}</span>
+      <span className="display my-1 block text-[0.3em] italic opacity-60">
+        &amp;
+      </span>
+      <span className="block">{parts[1]}</span>
+    </>
+  );
+}
+
 export function CoverPage({ page, event, household }: Props) {
   const dark = hasMedia(page);
 
@@ -18,7 +38,7 @@ export function CoverPage({ page, event, household }: Props) {
         {event.monogram && (
           <Monogram
             text={event.monogram}
-            className="mb-7 block h-24 w-24 text-accent"
+            className="mx-auto mb-7 block h-[4.6rem] w-44 text-accent"
           />
         )}
 
@@ -33,11 +53,11 @@ export function CoverPage({ page, event, household }: Props) {
         )}
 
         <h1
-          className={`script text-[clamp(3rem,15vw,4.6rem)] ${
+          className={`script text-[clamp(2.6rem,12.5vw,3.9rem)] leading-[1.05] ${
             dark ? "text-white" : "text-ink"
           }`}
         >
-          {event.couple_names}
+          <CoupleNames names={event.couple_names} />
         </h1>
 
         <div className="my-8 w-40">

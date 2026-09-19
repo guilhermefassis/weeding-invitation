@@ -1,18 +1,20 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper: #f6f1ea;
-  --color-paper-deep: #ebe1d5;
-  --color-ink: #453b33;
-  --color-ink-soft: #6f6157;
-  --color-accent: #ab7f5e;
-  --color-accent-soft: #d9bfa7;
-  --color-backdrop: #2a2420;
-  --color-envelope: #22201d;
-  --color-seal: #b08a4f;
+  /* Papelaria: osso levemente frio, tinta verde-pinho, latão envelhecido.
+     O verde escuro no lugar do preto dá profundidade sem peso. */
+  --color-paper: #f2efe7;
+  --color-paper-deep: #e2ded1;
+  --color-ink: #22302a;
+  --color-ink-soft: #5d6b62;
+  --color-accent: #9a8550;
+  --color-accent-soft: #c9bd97;
+  --color-backdrop: #18211c;
+  --color-envelope: #223028;
+  --color-seal: #9c8248;
 
   --font-serif: "Cormorant Garamond", Georgia, serif;
-  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  --font-sans: ui-serif, Georgia, serif;
 }
 
 :root {
@@ -27,11 +29,11 @@ body {
 body {
   /* next/font define --font-cormorant/--font-script/--font-sans-ui aqui. */
   --serif: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
-  --handwriting: var(--font-script), "Great Vibes", cursive;
+  --handwriting: var(--font-script), "Pinyon Script", cursive;
   margin: 0;
   background: var(--color-backdrop);
   color: var(--color-ink);
-  font-family: var(--font-sans-ui), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--serif);
   -webkit-font-smoothing: antialiased;
   overscroll-behavior: none;
 }
@@ -254,15 +256,43 @@ body {
   padding: clamp(28px, 7vw, 44px) clamp(22px, 6vw, 36px) 76px;
 }
 
+/* Fibra do papel: ruído fino gerado no próprio CSS, sem imagem. */
 .paper-grain {
   position: absolute;
   inset: 0;
   z-index: 0;
-  opacity: 0.55;
-  background:
-    radial-gradient(90% 60% at 50% 0%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 70%),
-    radial-gradient(70% 50% at 100% 100%, rgba(217, 191, 167, 0.35), rgba(255, 255, 255, 0) 70%),
-    radial-gradient(60% 45% at 0% 85%, rgba(217, 191, 167, 0.3), rgba(255, 255, 255, 0) 70%);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23f)' opacity='0.35'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+  opacity: 0.22;
+}
+
+/* Vinheta: as bordas de um cartão sempre pegam menos luz que o centro. */
+.paper-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: multiply;
+  background: radial-gradient(
+    120% 85% at 50% 42%,
+    transparent 55%,
+    color-mix(in srgb, var(--color-ink) 10%, transparent) 100%
+  );
+}
+
+/* Filete de papelaria, a poucos milímetros da borda. */
+.paper-frame {
+  position: absolute;
+  inset: clamp(13px, 3.4vw, 20px);
+  z-index: 1;
+  pointer-events: none;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 32%, transparent);
+}
+
+.paper-frame::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 13%, transparent);
 }
 
 /* ------------------------------------------------------ tipografia */

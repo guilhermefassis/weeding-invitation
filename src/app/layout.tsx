@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Great_Vibes, Jost } from "next/font/google";
+import { Cormorant_Garamond, Pinyon_Script } from "next/font/google";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -8,15 +8,10 @@ const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
 });
 
-const greatVibes = Great_Vibes({
+const pinyon = Pinyon_Script({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-script",
-});
-
-const jost = Jost({
-  subsets: ["latin"],
-  variable: "--font-sans-ui",
 });
 
 export const metadata: Metadata = {
@@ -25,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#2a2420",
+  themeColor: "#18211c",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -37,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body
-        className={`${cormorant.variable} ${greatVibes.variable} ${jost.variable}`}
+        className={`${cormorant.variable} ${pinyon.variable}`}
       >
         {children}
       </body>

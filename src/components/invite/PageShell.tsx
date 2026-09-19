@@ -41,11 +41,10 @@ export function PageShell({ page, children, ornaments = true }: Props) {
         <div className="paper-grain" />
       )}
 
+      {!media && <div className="paper-frame" />}
+
       {!media && ornaments && (
-        <>
-          <Ornament className="pointer-events-none absolute -top-2 right-0 z-[1] w-36 rotate-180 text-accent" />
-          <Ornament className="pointer-events-none absolute bottom-0 left-0 z-[1] w-32 text-accent" />
-        </>
+        <Ornament className="pointer-events-none absolute bottom-[84px] left-[clamp(22px,5vw,32px)] z-[1] w-24 text-accent opacity-80" />
       )}
 
       <div className="page-content" data-tone={media ? "dark" : "light"}>

@@ -5,11 +5,11 @@
 with alvo as (select id from events order by created_at limit 1)
 update events set
   theme = jsonb_build_object(
-    'accent',   '#a8642c',
-    'paper',    '#f7f0e1',
-    'ink',      '#3b3129',
-    'envelope', '#2b2620',
-    'seal',     '#c2903f'
+    'accent',   '#8f7a43',
+    'paper',    '#f1ede1',
+    'ink',      '#2b3327',
+    'envelope', '#262e22',
+    'seal',     '#a98a45'
   ),
   blessing_line = 'Bota o chapéu e vem comemorar com a gente'
 where id in (select id from alvo);

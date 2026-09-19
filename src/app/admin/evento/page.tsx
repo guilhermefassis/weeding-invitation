@@ -22,11 +22,11 @@ function toDateInput(iso: string): string {
 }
 
 const THEME_FIELDS = [
-  { name: "accent", label: "Destaque", fallback: "#ab7f5e" },
-  { name: "paper", label: "Papel", fallback: "#f6f1ea" },
-  { name: "ink", label: "Texto", fallback: "#453b33" },
-  { name: "envelope", label: "Envelope", fallback: "#22201d" },
-  { name: "seal", label: "Lacre", fallback: "#b08a4f" },
+  { name: "accent", label: "Destaque", fallback: "#9a8550" },
+  { name: "paper", label: "Papel", fallback: "#f2efe7" },
+  { name: "ink", label: "Texto", fallback: "#22302a" },
+  { name: "envelope", label: "Envelope", fallback: "#223028" },
+  { name: "seal", label: "Lacre", fallback: "#9c8248" },
 ] as const;
 
 function Field({
