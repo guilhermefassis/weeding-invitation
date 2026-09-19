@@ -18,6 +18,7 @@ export function GiftPage({ page, event, household }: Props) {
   const [custom, setCustom] = useState("");
   const [qr, setQr] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
   const [message, setMessage] = useState("");
   const [sent, setSent] = useState(false);
 
@@ -53,8 +54,15 @@ export function GiftPage({ page, event, household }: Props) {
 
   async function copy() {
     if (!payload) return;
-    await navigator.clipboard.writeText(payload);
-    setCopied(true);
+    try {
+      await navigator.clipboard.writeText(payload);
+      setCopied(true);
+      setCopyFailed(false);
+    } catch {
+      // Alguns navegadores bloqueiam a área de transferência; mostramos o
+      // código para o convidado selecionar à mão.
+      setCopyFailed(true);
+    }
   }
 
   async function notify() {
@@ -154,6 +162,20 @@ export function GiftPage({ page, event, household }: Props) {
           <button type="button" className="btn btn-primary mt-4 w-full" onClick={copy}>
             {copied ? "Código copiado!" : "Copiar código PIX"}
           </button>
+
+          {copyFailed && (
+            <label className="mt-3 block">
+              <span className="display text-[0.76rem] text-ink-soft">
+                Seu navegador bloqueou a cópia — selecione o código:
+              </span>
+              <input
+                className="field mt-1 w-full font-mono text-[0.7rem]"
+                readOnly
+                value={payload ?? ""}
+                onFocus={(input) => input.target.select()}
+              />
+            </label>
+          )}
 
           <p className="display mt-3 text-center text-[0.78rem] text-ink-soft">
             Chave: {event.pix_key}

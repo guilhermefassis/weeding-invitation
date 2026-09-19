@@ -18,6 +18,19 @@ virar produto depois.
 | `/admin/paginas` | Conteúdo, mídia e ordem das páginas. |
 | `/admin/evento` | Data, local, PIX e mensagem do WhatsApp. |
 
+### Envelope de entrada
+
+O convite abre lacrado: envelope escuro, monograma em relevo, lacre de cera com
+as iniciais do casal e uma etiqueta com o nome da família — a mesma saudação
+usada no WhatsApp. Um toque rompe o lacre e revela o livro. O envelope aparece
+sempre que houver monograma cadastrado; sem ele, o convite abre direto na capa.
+
+### Cores
+
+Em `/admin/evento` dá para trocar as cinco cores do convite: destaque, papel,
+texto, envelope e lacre. Elas viram custom properties aplicadas na raiz do
+convite, então valem para tudo — filetes, ícones, botões e o lacre.
+
 ### Páginas do convite
 
 Cada página tem um `kind` que define o comportamento, e todo o resto vem do

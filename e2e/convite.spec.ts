@@ -19,6 +19,27 @@ async function abrir(page: Page, label: string, heading: RegExp | string) {
 
 test.beforeEach(async ({ page }) => {
   await page.goto(CONVITE);
+  // O convite abre num envelope lacrado; o livro só aparece quando ele sai.
+  const envelope = page.getByRole("button", { name: "Abrir o convite" });
+  await envelope.click();
+  await expect(envelope).toHaveCount(0);
+});
+
+test.describe("envelope", () => {
+  test.use({ storageState: { cookies: [], origins: [] } });
+
+  test("traz o lacre com as iniciais e o nome da família", async ({ page }) => {
+    await page.goto(CONVITE);
+
+    const envelope = page.getByRole("button", { name: "Abrir o convite" });
+    await expect(envelope).toBeVisible();
+    await expect(envelope).toContainText("Ricardo e família");
+    await expect(page.locator(".envelope-seal-face")).toContainText("GF");
+
+    await envelope.click();
+    await expect(envelope).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Guilherme & Fernanda" })).toBeVisible();
+  });
 });
 
 test("a capa traz o casal, a data e a saudação da família", async ({ page }) => {
@@ -76,6 +97,8 @@ test("quem recusa vê a mensagem de ausência", async ({ page }) => {
 
 test("a página de presente gera o PIX e copia o código", async ({ page, context }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  // A área de transferência exige documento em foco.
+  await page.bringToFront();
 
   await next(page);
   await abrir(page, "Para nos presentear", "Presente via PIX");

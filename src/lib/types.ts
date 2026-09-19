@@ -55,10 +55,13 @@ export type InvitePage = {
 };
 
 export type Theme = {
-  ink?: string;
-  paper?: string;
+  /** Cor de destaque: filetes, ícones, botões. */
   accent?: string;
-  muted?: string;
+  paper?: string;
+  ink?: string;
+  /** Envelope de entrada e o lacre de cera. */
+  envelope?: string;
+  seal?: string;
 };
 
 export type EventRecord = {

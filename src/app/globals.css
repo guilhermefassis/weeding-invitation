@@ -8,6 +8,8 @@
   --color-accent: #ab7f5e;
   --color-accent-soft: #d9bfa7;
   --color-backdrop: #2a2420;
+  --color-envelope: #22201d;
+  --color-seal: #b08a4f;
 
   --font-serif: "Cormorant Garamond", Georgia, serif;
   --font-sans: ui-sans-serif, system-ui, sans-serif;
@@ -286,9 +288,9 @@ body {
   height: 1px;
   background: linear-gradient(
     90deg,
-    rgba(171, 127, 94, 0),
-    rgba(171, 127, 94, 0.6),
-    rgba(171, 127, 94, 0)
+    transparent,
+    color-mix(in srgb, var(--color-accent) 60%, transparent),
+    transparent
   );
 }
 
@@ -304,7 +306,7 @@ body {
 }
 
 .field:focus {
-  outline: 2px solid rgba(171, 127, 94, 0.45);
+  outline: 2px solid color-mix(in srgb, var(--color-accent) 45%, transparent);
   outline-offset: 1px;
 }
 
@@ -329,7 +331,7 @@ body {
 }
 
 .btn-ghost {
-  background: rgba(171, 127, 94, 0.12);
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
   color: var(--color-accent);
 }
 
@@ -345,4 +347,181 @@ body {
 .page-content[data-tone="dark"] {
   color: #fdf8f2;
   text-shadow: 0 1px 12px rgba(20, 14, 10, 0.35);
+}
+
+/* ------------------------------------------------------------ envelope */
+
+.envelope {
+  position: absolute;
+  inset: 0;
+  z-index: 90;
+  display: block;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--color-envelope) 82%, white), var(--color-envelope) 60%),
+    var(--color-envelope);
+  transition: opacity 500ms ease, transform 700ms cubic-bezier(0.3, 0, 0.2, 1);
+}
+
+/* A aba do envelope, dobrada para baixo. */
+.envelope-flap {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 52%;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background: linear-gradient(
+    175deg,
+    color-mix(in srgb, var(--color-envelope) 88%, white),
+    color-mix(in srgb, var(--color-envelope) 96%, black)
+  );
+  filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.55));
+  transform-origin: top center;
+  transition: transform 700ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* As duas dobras que sobem dos cantos de baixo. */
+.envelope::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 46%;
+  clip-path: polygon(0 100%, 0 0, 50% 46%, 100% 0, 100% 100%);
+  background: linear-gradient(
+    0deg,
+    color-mix(in srgb, var(--color-envelope) 92%, white),
+    color-mix(in srgb, var(--color-envelope) 99%, black)
+  );
+  opacity: 0.9;
+}
+
+/* Monograma em relevo seco: só sombra e luz, sem tinta. */
+.envelope-emboss {
+  position: absolute;
+  top: 9%;
+  left: 0;
+  right: 0;
+  font-family: var(--serif);
+  font-size: clamp(2.6rem, 13vw, 3.6rem);
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  color: color-mix(in srgb, var(--color-envelope) 86%, white);
+  opacity: 0.5;
+  text-shadow:
+    0 1px 0 color-mix(in srgb, var(--color-envelope) 70%, white),
+    0 -1px 1px rgba(0, 0, 0, 0.55);
+}
+
+.envelope-hint {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  width: min(88%, 360px);
+  transform: translateX(-50%);
+  color: color-mix(in srgb, var(--color-seal) 70%, white);
+}
+
+.envelope-hint svg {
+  width: 100%;
+  overflow: visible;
+}
+
+.envelope-hint text {
+  font-family: var(--serif);
+  font-size: 14px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  fill: currentColor;
+  opacity: 0.75;
+}
+
+/* Etiqueta de papel saindo por baixo do lacre. */
+.envelope-tag {
+  position: absolute;
+  top: 58%;
+  left: 50%;
+  z-index: 1;
+  max-width: 46%;
+  padding: 9px 14px 9px clamp(52px, 15vw, 66px);
+  font-family: var(--serif);
+  font-size: clamp(0.82rem, 3.6vw, 1rem);
+  color: #2f2a26;
+  background: linear-gradient(105deg, #f4efe6, #fffdf9);
+  box-shadow: 0 10px 22px -14px rgba(0, 0, 0, 0.9);
+  transform: translateY(-46%) rotate(-7deg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: transform 600ms ease, opacity 400ms ease;
+}
+
+/* Lacre de cera. */
+.envelope-seal {
+  position: absolute;
+  top: 58%;
+  left: 50%;
+  z-index: 2;
+  width: clamp(92px, 27vw, 120px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 46% 54% 52% 48% / 50% 46% 54% 50%;
+  background:
+    radial-gradient(60% 55% at 35% 30%, color-mix(in srgb, var(--color-seal) 55%, white), transparent 70%),
+    radial-gradient(80% 80% at 70% 80%, color-mix(in srgb, var(--color-seal) 70%, black), transparent 60%),
+    var(--color-seal);
+  box-shadow:
+    0 12px 26px -12px rgba(0, 0, 0, 0.85),
+    inset 0 2px 5px color-mix(in srgb, var(--color-seal) 40%, white),
+    inset 0 -3px 7px color-mix(in srgb, var(--color-seal) 55%, black);
+  transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1), opacity 400ms ease;
+}
+
+.envelope-seal-face {
+  position: absolute;
+  inset: 13%;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--color-seal) 60%, black);
+  box-shadow: inset 0 1px 2px color-mix(in srgb, var(--color-seal) 45%, white);
+}
+
+.envelope-seal-face .script {
+  font-size: clamp(1.9rem, 8vw, 2.4rem);
+  line-height: 1;
+  color: color-mix(in srgb, var(--color-seal) 62%, black);
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--color-seal) 45%, white);
+}
+
+/* Abertura: a aba levanta, o lacre estala e o envelope sai de cena. */
+.envelope[data-opening] {
+  opacity: 0;
+  transform: scale(1.06);
+  pointer-events: none;
+}
+
+.envelope[data-opening] .envelope-flap {
+  transform: rotateX(-165deg);
+}
+
+.envelope[data-opening] .envelope-seal {
+  transform: translate(-50%, -50%) scale(1.25) rotate(-12deg);
+  opacity: 0;
+}
+
+.envelope[data-opening] .envelope-tag {
+  transform: translate(26%, -46%) rotate(-3deg);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .envelope,
+  .envelope-flap,
+  .envelope-seal,
+  .envelope-tag {
+    transition-duration: 1ms;
+  }
 }

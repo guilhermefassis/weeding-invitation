@@ -21,6 +21,14 @@ function toDateInput(iso: string): string {
   }).format(new Date(iso));
 }
 
+const THEME_FIELDS = [
+  { name: "accent", label: "Destaque", fallback: "#ab7f5e" },
+  { name: "paper", label: "Papel", fallback: "#f6f1ea" },
+  { name: "ink", label: "Texto", fallback: "#453b33" },
+  { name: "envelope", label: "Envelope", fallback: "#22201d" },
+  { name: "seal", label: "Lacre", fallback: "#b08a4f" },
+] as const;
+
 function Field({
   label,
   name,
@@ -78,6 +86,34 @@ export default async function EventPage() {
             hint="Depois desta data quem não respondeu conta como ausente"
           />
           <Field label="Música de fundo (URL)" name="music_url" defaultValue={event.music_url} />
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-lg font-medium">Cores</h2>
+        <p className="-mt-2 text-sm text-zinc-500">
+          Valem para o convite inteiro. O envelope e o lacre são a primeira
+          tela, antes do livro abrir.
+        </p>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {THEME_FIELDS.map((field) => (
+            <label key={field.name} className="flex flex-col gap-1">
+              <span className="text-xs tracking-wide text-zinc-500 uppercase">
+                {field.label}
+              </span>
+              <span className="flex items-center gap-2">
+                <input
+                  type="color"
+                  name={`theme_${field.name}`}
+                  defaultValue={event.theme[field.name] ?? field.fallback}
+                  className="h-9 w-14 cursor-pointer rounded border border-zinc-300 bg-white"
+                />
+                <code className="text-xs text-zinc-400">
+                  {event.theme[field.name] ?? field.fallback}
+                </code>
+              </span>
+            </label>
+          ))}
         </div>
       </section>
 

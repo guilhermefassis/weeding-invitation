@@ -66,9 +66,16 @@ export async function updateEvent(form: FormData) {
     .map((item) => Number(item.trim()))
     .filter((item) => Number.isFinite(item) && item > 0);
 
+  const theme: Record<string, string> = {};
+  for (const key of ["accent", "paper", "ink", "envelope", "seal"]) {
+    const value = text(form, `theme_${key}`);
+    if (value) theme[key] = value;
+  }
+
   const { error } = await supabase
     .from("events")
     .update({
+      theme,
       couple_names: text(form, "couple_names"),
       monogram: text(form, "monogram"),
       title: text(form, "title"),
