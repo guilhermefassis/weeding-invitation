@@ -43,6 +43,14 @@ export default async function AdminLayout({
                 {link.label}
               </Link>
             ))}
+            <a
+              href="/previa"
+              target="_blank"
+              rel="noreferrer"
+              className="text-accent hover:underline"
+            >
+              Ver prévia
+            </a>
           </nav>
           <form action={signOut} className="ml-auto flex items-center gap-3">
             <span className="hidden text-xs text-zinc-400 sm:inline">
