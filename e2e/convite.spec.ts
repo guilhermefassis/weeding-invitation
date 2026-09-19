@@ -2,10 +2,19 @@ import { expect, test, type Page } from "@playwright/test";
 
 const CONVITE = "/convite/demo";
 
-async function next(page: Page) {
+/** Vira para frente e espera o estado assentar, em vez de dormir um tempo fixo. */
+async function next(page: Page, target = 1) {
   await page.getByRole("button", { name: "Próxima página" }).click();
-  // A virada da folha leva 720ms.
-  await page.waitForTimeout(800);
+  await expect(page.locator(".book-dots i").nth(target)).toHaveAttribute(
+    "data-on",
+    "true",
+  );
+}
+
+/** Espera a página de destino aparecer depois de tocar num ícone do menu. */
+async function abrir(page: Page, label: string, heading: RegExp | string) {
+  await page.getByRole("button", { name: label }).click();
+  await expect(page.getByRole("heading", { name: heading })).toBeVisible();
 }
 
 test.beforeEach(async ({ page }) => {
@@ -21,17 +30,12 @@ test("a capa traz o casal, a data e a saudação da família", async ({ page }) 
 
 test("o menu de ícones leva direto para a página de confirmação", async ({ page }) => {
   await next(page);
-
-  await page.getByRole("button", { name: "Confirmar presença" }).click();
-  await page.waitForTimeout(800);
-
-  await expect(page.getByRole("heading", { name: "Quem vem com você?" })).toBeVisible();
+  await abrir(page, "Confirmar presença", "Quem vem com você?");
 });
 
 test("a família confirma cada integrante de uma vez", async ({ page }) => {
   await next(page);
-  await page.getByRole("button", { name: "Confirmar presença" }).click();
-  await page.waitForTimeout(800);
+  await abrir(page, "Confirmar presença", "Quem vem com você?");
 
   await expect(page.getByText("Confirme até 30 de novembro")).toBeVisible();
 
@@ -56,8 +60,7 @@ test("a família confirma cada integrante de uma vez", async ({ page }) => {
 
 test("quem recusa vê a mensagem de ausência", async ({ page }) => {
   await next(page);
-  await page.getByRole("button", { name: "Confirmar presença" }).click();
-  await page.waitForTimeout(800);
+  await abrir(page, "Confirmar presença", "Quem vem com você?");
 
   for (const nome of ["Ricardo Oliveira", "Carla Oliveira", "Pedro Oliveira"]) {
     await page
@@ -75,8 +78,7 @@ test("a página de presente gera o PIX e copia o código", async ({ page, contex
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
 
   await next(page);
-  await page.getByRole("button", { name: "Para nos presentear" }).click();
-  await page.waitForTimeout(800);
+  await abrir(page, "Para nos presentear", "Presente via PIX");
 
   await expect(page.getByAltText("QR Code do PIX")).toBeVisible();
   await expect(page.getByText("Sem valor definido")).toBeVisible();
@@ -95,8 +97,7 @@ test("a página de presente gera o PIX e copia o código", async ({ page, contex
 
 test("a localização abre rota no Google Maps e no Waze", async ({ page }) => {
   await next(page);
-  await page.getByRole("button", { name: "Saiba como chegar" }).click();
-  await page.waitForTimeout(800);
+  await abrir(page, "Saiba como chegar", "O lugar");
 
   await expect(
     page.getByText("Rua das Palmeiras, 120 — Itaipava, Petrópolis/RJ"),
@@ -111,13 +112,12 @@ test("a localização abre rota no Google Maps e no Waze", async ({ page }) => {
 });
 
 test("dá para folhear até o encerramento e voltar", async ({ page }) => {
-  for (let i = 0; i < 8; i++) await next(page);
+  for (let i = 1; i <= 8; i++) await next(page, i);
 
   await expect(page.getByRole("heading", { name: "Esperamos por você" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Próxima página" })).toBeDisabled();
 
   await page.getByRole("button", { name: "Página anterior" }).click();
-  await page.waitForTimeout(800);
   await expect(page.getByRole("heading", { name: "Boas-vindas" })).toBeVisible();
 });
 

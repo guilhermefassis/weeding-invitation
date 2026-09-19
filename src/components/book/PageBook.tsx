@@ -28,6 +28,8 @@ export function useBook(): BookApi {
 }
 
 const DRAG_THRESHOLD = 0.28;
+/** Mesma duração da transição em .leaf (globals.css). */
+const FLIP_MS = 720;
 
 function isInteractive(target: EventTarget | null): boolean {
   return (
@@ -48,13 +50,24 @@ export function PageBook({ children }: { children: ReactNode[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const pointer = useRef<{ id: number; x: number; y: number; axis: "?" | "x" | "y" } | null>(null);
 
+  /** Folha que está virando para frente e precisa ficar por cima até parar. */
+  const [flipping, setFlipping] = useState<number | null>(null);
+
   const goTo = useCallback(
     (index: number) => {
+      const target = Math.max(0, Math.min(total - 1, index));
       setDrag(0);
-      setCurrent(Math.max(0, Math.min(total - 1, index)));
+      if (target > current) setFlipping(current);
+      setCurrent(target);
     },
-    [total],
+    [current, total],
   );
+
+  useEffect(() => {
+    if (flipping === null) return;
+    const timer = setTimeout(() => setFlipping(null), FLIP_MS + 30);
+    return () => clearTimeout(timer);
+  }, [flipping]);
 
   const next = useCallback(() => goTo(current + 1), [current, goTo]);
   const prev = useCallback(() => goTo(current - 1), [current, goTo]);
@@ -143,8 +156,9 @@ export function PageBook({ children }: { children: ReactNode[] }) {
             active = true;
           }
 
+          const turning = active || index === flipping;
           const mostlyFlipped = angle <= -90;
-          const zIndex = active ? total + 1 : mostlyFlipped ? index : total - index;
+          const zIndex = turning ? total + 1 : mostlyFlipped ? index : total - index;
           const shade = Math.min(1, Math.abs(angle) / 180);
 
           return (
@@ -160,7 +174,10 @@ export function PageBook({ children }: { children: ReactNode[] }) {
                 {leaf}
                 <div
                   className="leaf-shade"
-                  style={{ opacity: mostlyFlipped ? 0 : shade * 0.55 }}
+                  style={{
+                    opacity:
+                      index === flipping ? 0.5 : mostlyFlipped ? 0 : shade * 0.55,
+                  }}
                 />
               </div>
               <div className="leaf-face leaf-back">
