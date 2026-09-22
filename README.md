@@ -58,6 +58,16 @@ banco:
 Qualquer página aceita foto ou vídeo de fundo, com controle de escurecimento
 para o texto continuar legível.
 
+### Galeria de fotos
+
+A página `gallery` ("Nossos momentos") já vem no convite, vazia. Em
+`/admin/paginas` ela abre com uma grade de miniaturas na mesma ordem em que o
+convidado vai ver: o envio aceita vários arquivos de uma vez, `←` e `→` movem
+uma foto de lugar e `✕` remove — apagando também o arquivo do Storage. A
+legenda vale só quando você envia um arquivo por vez, senão a mesma frase
+cairia embaixo de todas as fotos. Vídeos entram na mesma grade e aparecem no
+convite com controles.
+
 ### Confirmação de presença
 
 O link único identifica a família, então o convidado não digita nada: ele vê
