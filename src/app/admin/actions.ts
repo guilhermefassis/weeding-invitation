@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requireUser } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { householdSlug } from "@/lib/slug";
+import { directMediaUrl } from "@/lib/media-url";
 import { normalizePhone } from "@/lib/whatsapp";
 import { hasCloudApi, sendWhatsappMessage } from "@/lib/whatsapp-cloud";
 
@@ -109,7 +110,7 @@ export async function updatePage(form: FormData) {
   const id = text(form, "id");
   if (!id) throw new Error("Página não informada");
 
-  let backgroundUrl = text(form, "background_url");
+  let backgroundUrl = directMediaUrl(text(form, "background_url"));
   const file = form.get("background_file");
   if (file instanceof File && file.size > 0) {
     backgroundUrl = await uploadMedia(file, "paginas");
