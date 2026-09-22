@@ -69,10 +69,18 @@ export async function updateEvent(form: FormData) {
     .map((item) => Number(item.trim()))
     .filter((item) => Number.isFinite(item) && item > 0);
 
-  const theme: Record<string, string> = {};
+  const theme: Record<string, string | number> = {};
   for (const key of ["accent", "paper", "ink", "envelope", "seal"]) {
     const value = text(form, `theme_${key}`);
     if (value) theme[key] = value;
+  }
+  // Multiplicadores do envelope. O limite existe para o lacre não estourar a
+  // tela nem as iniciais vazarem para fora da cera.
+  for (const key of ["seal_scale", "monogram_scale", "emboss_scale"]) {
+    const value = Number(text(form, `theme_${key}`));
+    if (Number.isFinite(value) && value > 0) {
+      theme[key] = Math.min(1.8, Math.max(0.5, value));
+    }
   }
 
   const { error } = await supabase

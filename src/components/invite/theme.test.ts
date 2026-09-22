@@ -2,15 +2,28 @@ import { describe, expect, it } from "vitest";
 import { themeStyle } from "./theme";
 
 describe("themeStyle", () => {
-  it("traduz as cores do painel em custom properties", () => {
-    expect(themeStyle({ accent: "#123456", seal: "#abcdef" })).toEqual({
-      "--color-accent": "#123456",
-      "--color-seal": "#abcdef",
+  it("não define nada quando o tema está vazio", () => {
+    expect(themeStyle({})).toEqual({});
+  });
+
+  it("transforma cores em custom properties", () => {
+    expect(themeStyle({ accent: "#9a8550", seal: "#c7b23a" })).toEqual({
+      "--color-accent": "#9a8550",
+      "--color-seal": "#c7b23a",
     });
   });
 
-  it("ignora o que não foi configurado, deixando o padrão do CSS valer", () => {
-    expect(themeStyle({})).toEqual({});
-    expect(themeStyle({ accent: "", ink: "#111" })).toEqual({ "--color-ink": "#111" });
+  it("transforma os tamanhos do envelope em multiplicadores", () => {
+    expect(
+      themeStyle({ seal_scale: 1.4, monogram_scale: 0.8, emboss_scale: 1 }),
+    ).toEqual({
+      "--seal-scale": "1.4",
+      "--monogram-scale": "0.8",
+      "--emboss-scale": "1",
+    });
+  });
+
+  it("ignora tamanho inválido em vez de escrever NaN no CSS", () => {
+    expect(themeStyle({ seal_scale: Number.NaN })).toEqual({});
   });
 });

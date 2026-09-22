@@ -62,6 +62,12 @@ export type Theme = {
   /** Envelope de entrada e o lacre de cera. */
   envelope?: string;
   seal?: string;
+  /** Tamanho do lacre de cera. 1 = padrão. */
+  seal_scale?: number;
+  /** Tamanho das iniciais gravadas no lacre. 1 = padrão. */
+  monogram_scale?: number;
+  /** Tamanho das iniciais em relevo, no alto do envelope. 1 = padrão. */
+  emboss_scale?: number;
 };
 
 export type EventRecord = {

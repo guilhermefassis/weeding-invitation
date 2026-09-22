@@ -1,6 +1,7 @@
 import { getAdminEvent } from "@/lib/admin-data";
 import { DEFAULT_WHATSAPP_TEMPLATE } from "@/lib/whatsapp";
 import { updateEvent } from "../actions";
+import { EnvelopeSizes } from "./EnvelopeSizes";
 
 /** ISO -> valor aceito pelo input datetime-local, no fuso de São Paulo. */
 function toLocalInput(iso: string): string {
@@ -115,6 +116,15 @@ export default async function EventPage() {
             </label>
           ))}
         </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-lg font-medium">Envelope</h2>
+        <p className="-mt-2 text-sm text-zinc-500">
+          O tamanho do lacre e das iniciais. Arraste e veja na prévia — o
+          convite só muda depois de salvar.
+        </p>
+        <EnvelopeSizes theme={event.theme} monogram={event.monogram} />
       </section>
 
       <section className="flex flex-col gap-4">

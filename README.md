@@ -31,6 +31,12 @@ Em `/admin/evento` dá para trocar as cinco cores do convite: destaque, papel,
 texto, envelope e lacre. Elas viram custom properties aplicadas na raiz do
 convite, então valem para tudo — filetes, ícones, botões e o lacre.
 
+Na mesma tela, a seção **Envelope** ajusta o tamanho do lacre, das iniciais
+gravadas nele e das iniciais em relevo, de 50% a 180% do padrão. São
+multiplicadores, não medidas fixas: o convite continua se adaptando à tela do
+aparelho. Ao lado dos controles fica uma prévia em miniatura, na proporção de
+um celular, que responde enquanto você arrasta.
+
 Para trocar o clima inteiro de uma vez, `supabase/temas/` guarda temas prontos
 que mexem em cores e textos juntos:
 
