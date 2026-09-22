@@ -5,8 +5,10 @@ import { requireUser } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { householdSlug } from "@/lib/slug";
 import { directMediaUrl } from "@/lib/media-url";
+import { storagePathFromUrl } from "@/lib/storage-path";
 import { normalizePhone } from "@/lib/whatsapp";
 import { hasCloudApi, sendWhatsappMessage } from "@/lib/whatsapp-cloud";
+import type { GalleryItem } from "@/lib/types";
 
 const BUCKET = "convite";
 
@@ -134,16 +136,9 @@ export async function updatePage(form: FormData) {
   revalidatePath("/admin/paginas");
 }
 
-export async function addGalleryMedia(form: FormData) {
-  await requireUser();
-  const supabase = createAdminClient();
-  const id = text(form, "id");
-  const file = form.get("media");
-  if (!id || !(file instanceof File) || file.size === 0) return;
-
-  const url = await uploadMedia(file, "galeria");
-
-  const { data, error } = await supabase
+/** Lê a galeria de uma página e devolve junto o config inteiro. */
+async function loadGallery(client: ReturnType<typeof createAdminClient>, id: string) {
+  const { data, error } = await client
     .from("invite_pages")
     .select("config")
     .eq("id", id)
@@ -151,20 +146,86 @@ export async function addGalleryMedia(form: FormData) {
   if (error) throw new Error(error.message);
 
   const config = (data.config ?? {}) as Record<string, unknown>;
-  const gallery = Array.isArray(config.gallery) ? config.gallery : [];
-  gallery.push({
-    url,
-    kind: file.type.startsWith("video") ? "video" : "image",
-    caption: text(form, "caption") ?? undefined,
-  });
+  const gallery = Array.isArray(config.gallery)
+    ? [...(config.gallery as GalleryItem[])]
+    : [];
 
-  const { error: updateError } = await supabase
+  return { config, gallery };
+}
+
+async function saveGallery(
+  client: ReturnType<typeof createAdminClient>,
+  id: string,
+  config: Record<string, unknown>,
+  gallery: GalleryItem[],
+) {
+  const { error } = await client
     .from("invite_pages")
     .update({ config: { ...config, gallery } })
     .eq("id", id);
+  if (error) throw new Error(error.message);
 
-  if (updateError) throw new Error(updateError.message);
   revalidatePath("/admin/paginas");
+}
+
+export async function addGalleryMedia(form: FormData) {
+  await requireUser();
+  const supabase = createAdminClient();
+  const id = text(form, "id");
+  if (!id) return;
+
+  const files = form
+    .getAll("media")
+    .filter((item): item is File => item instanceof File && item.size > 0);
+  if (files.length === 0) return;
+
+  const { config, gallery } = await loadGallery(supabase, id);
+  const caption = text(form, "caption") ?? undefined;
+
+  for (const file of files) {
+    const url = await uploadMedia(file, "galeria");
+    gallery.push({
+      url,
+      kind: file.type.startsWith("video") ? "video" : "image",
+      // Uma legenda só faz sentido quando é uma mídia de cada vez.
+      caption: files.length === 1 ? caption : undefined,
+    });
+  }
+
+  await saveGallery(supabase, id, config, gallery);
+}
+
+export async function removeGalleryMedia(form: FormData) {
+  await requireUser();
+  const supabase = createAdminClient();
+  const id = text(form, "id");
+  const index = Number(text(form, "index"));
+  if (!id || !Number.isInteger(index)) return;
+
+  const { config, gallery } = await loadGallery(supabase, id);
+  const [removed] = gallery.splice(index, 1);
+  if (!removed) return;
+
+  await saveGallery(supabase, id, config, gallery);
+
+  // O arquivo só sai do Storage depois que a página já não aponta para ele.
+  const path = storagePathFromUrl(removed.url);
+  if (path) await supabase.storage.from(BUCKET).remove([path]);
+}
+
+export async function moveGalleryMedia(form: FormData) {
+  await requireUser();
+  const supabase = createAdminClient();
+  const id = text(form, "id");
+  const index = Number(text(form, "index"));
+  const target = index + (text(form, "direction") === "up" ? -1 : 1);
+  if (!id || !Number.isInteger(index)) return;
+
+  const { config, gallery } = await loadGallery(supabase, id);
+  if (target < 0 || target >= gallery.length) return;
+
+  [gallery[index], gallery[target]] = [gallery[target], gallery[index]];
+  await saveGallery(supabase, id, config, gallery);
 }
 
 export async function movePage(form: FormData) {

@@ -1,6 +1,12 @@
 import { getAdminEvent, listPages } from "@/lib/admin-data";
 import type { GalleryItem } from "@/lib/types";
-import { addGalleryMedia, movePage, updatePage } from "../actions";
+import {
+  addGalleryMedia,
+  moveGalleryMedia,
+  movePage,
+  removeGalleryMedia,
+  updatePage,
+} from "../actions";
 
 const KIND_LABELS: Record<string, string> = {
   cover: "Capa",
@@ -184,30 +190,101 @@ export default async function PagesAdmin() {
 
             {page.kind === "gallery" && (
               <div className="mt-6 border-t border-zinc-200 pt-4">
-                <h3 className="text-sm font-medium">Galeria</h3>
+                <h3 className="text-sm font-medium">
+                  Galeria{" "}
+                  <span className="text-xs font-normal text-zinc-400">
+                    {gallery.length} {gallery.length === 1 ? "item" : "itens"} · a
+                    ordem aqui é a ordem no convite
+                  </span>
+                </h3>
+
                 {gallery.length > 0 && (
-                  <ul className="mt-2 flex flex-wrap gap-2">
+                  <ul className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-5">
                     {gallery.map((item, itemIndex) => (
-                      <li
-                        key={`${item.url}-${itemIndex}`}
-                        className="text-xs text-zinc-500"
-                      >
-                        {item.kind === "video" ? "🎬" : "🖼"} {item.caption ?? item.url.split("/").pop()}
+                      <li key={`${item.url}-${itemIndex}`} className="flex flex-col gap-1">
+                        <div className="relative aspect-square overflow-hidden rounded-lg bg-zinc-100">
+                          {item.kind === "video" ? (
+                            <video src={item.url} className="h-full w-full object-cover" />
+                          ) : (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={item.url}
+                              alt={item.caption ?? ""}
+                              className="h-full w-full object-cover"
+                            />
+                          )}
+                          {item.kind === "video" && (
+                            <span className="absolute bottom-1 left-1 rounded bg-black/60 px-1 text-[10px] text-white">
+                              vídeo
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center justify-center gap-1">
+                          {(["up", "down"] as const).map((direction) => (
+                            <form key={direction} action={moveGalleryMedia}>
+                              <input type="hidden" name="id" value={page.id} />
+                              <input type="hidden" name="index" value={itemIndex} />
+                              <input type="hidden" name="direction" value={direction} />
+                              <button
+                                type="submit"
+                                className="rounded px-1.5 text-xs text-zinc-500 hover:bg-zinc-100 disabled:opacity-25"
+                                disabled={
+                                  direction === "up"
+                                    ? itemIndex === 0
+                                    : itemIndex === gallery.length - 1
+                                }
+                                aria-label={direction === "up" ? "Mover antes" : "Mover depois"}
+                              >
+                                {direction === "up" ? "←" : "→"}
+                              </button>
+                            </form>
+                          ))}
+                          <form action={removeGalleryMedia}>
+                            <input type="hidden" name="id" value={page.id} />
+                            <input type="hidden" name="index" value={itemIndex} />
+                            <button
+                              type="submit"
+                              className="rounded px-1.5 text-xs text-red-600 hover:bg-red-50"
+                              aria-label="Remover"
+                            >
+                              ✕
+                            </button>
+                          </form>
+                        </div>
+
+                        {item.caption && (
+                          <p className="truncate text-center text-[11px] text-zinc-400">
+                            {item.caption}
+                          </p>
+                        )}
                       </li>
                     ))}
                   </ul>
                 )}
-                <form action={addGalleryMedia} className="mt-3 flex flex-wrap items-end gap-3">
+
+                <form action={addGalleryMedia} className="mt-4 flex flex-wrap items-end gap-3">
                   <input type="hidden" name="id" value={page.id} />
-                  <input type="file" name="media" accept="image/*,video/*" className="text-sm" />
+                  <label className="flex flex-col gap-1">
+                    <span className="text-xs text-zinc-500">
+                      Fotos ou vídeos (dá para escolher vários)
+                    </span>
+                    <input
+                      type="file"
+                      name="media"
+                      accept="image/*,video/*"
+                      multiple
+                      className="text-sm"
+                    />
+                  </label>
                   <input
                     className="rounded-lg border border-zinc-300 px-3 py-2 text-sm"
                     name="caption"
-                    placeholder="Legenda (opcional)"
+                    placeholder="Legenda (só para envio único)"
                   />
                   <button
                     type="submit"
-                    className="rounded-lg border border-zinc-300 px-3 py-2 text-sm"
+                    className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white"
                   >
                     Adicionar
                   </button>
