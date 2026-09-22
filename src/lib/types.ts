@@ -68,10 +68,16 @@ export type Theme = {
   monogram_scale?: number;
   /** Tamanho das iniciais em relevo, no alto do envelope. 1 = padrão. */
   emboss_scale?: number;
+  /** Texto secundário: datas, legendas, apoio. */
+  ink_soft?: string;
   /** Combinação de fontes, uma chave de FONT_PAIRS. */
   font_pair?: string;
+  /** Só o texto corrido, uma chave de TEXT_FONTS. Vazio = a fonte do par. */
+  font_text?: string;
   /** Tamanho do texto do convite inteiro. 1 = padrão. */
   font_scale?: number;
+  /** Peso do texto corrido: 300 leve, 400 normal, 500 forte. */
+  text_weight?: number;
 };
 
 export type EventRecord = {

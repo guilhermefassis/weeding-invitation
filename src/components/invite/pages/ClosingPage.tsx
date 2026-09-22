@@ -17,7 +17,7 @@ export function ClosingPage({
         {event.monogram && (
           <Monogram
             text={event.monogram}
-            className={`mx-auto mb-5 block h-16 w-36 ${dark ? "text-white" : "text-accent"}`}
+            className={`mx-auto mb-5 block h-16 w-36 ${dark ? "text-white" : "text-accent-ink"}`}
           />
         )}
 

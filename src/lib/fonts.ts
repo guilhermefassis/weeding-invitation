@@ -112,6 +112,17 @@ export const FONT_PAIRS: Record<string, FontPair> = {
 
 export const DEFAULT_FONT_PAIR = "classico";
 
+/**
+ * Fonte do texto corrido, para quem quer manter os nomes de um par e trocar
+ * só o corpo. Vazio = usa a do par.
+ */
+export const TEXT_FONTS: Record<string, { label: string; family: string }> = {
+  cormorant: { label: "Cormorant", family: cormorant.style.fontFamily },
+  playfair: { label: "Playfair", family: playfair.style.fontFamily },
+  baskerville: { label: "Baskerville", family: baskerville.style.fontFamily },
+  jost: { label: "Jost", family: jost.style.fontFamily },
+};
+
 export function fontPair(key: string | undefined): FontPair {
   return FONT_PAIRS[key ?? ""] ?? FONT_PAIRS[DEFAULT_FONT_PAIR];
 }

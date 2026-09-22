@@ -9,7 +9,7 @@ export function GalleryPage({ page }: { page: InvitePage }) {
     <PageShell page={page} ornaments={false}>
       <header className="text-center">
         {page.eyebrow && (
-          <p className={`eyebrow ${dark ? "text-white/80" : "text-accent"}`}>
+          <p className={`eyebrow ${dark ? "text-white/80" : "text-accent-ink"}`}>
             {page.eyebrow}
           </p>
         )}

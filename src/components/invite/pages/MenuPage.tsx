@@ -34,7 +34,7 @@ export function MenuPage({ page, targets }: Props) {
         {page.title && (
           <p
             className={`script mt-1 text-[2.4rem] ${
-              dark ? "text-white" : "text-accent"
+              dark ? "text-white" : "text-accent-ink"
             }`}
           >
             {page.title}
@@ -53,7 +53,7 @@ export function MenuPage({ page, targets }: Props) {
                   className={`grid h-14 w-14 place-items-center rounded-full border ${
                     dark
                       ? "border-white/45 bg-white/10 text-white"
-                      : "border-accent/40 bg-accent/10 text-accent"
+                      : "border-accent/40 bg-accent/10 text-accent-ink"
                   }`}
                 >
                   <MenuIconGlyph name={item.icon} />

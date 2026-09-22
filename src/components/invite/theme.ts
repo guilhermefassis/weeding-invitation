@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { FONT_PAIRS } from "@/lib/fonts";
+import { FONT_PAIRS, TEXT_FONTS } from "@/lib/fonts";
 import type { Theme } from "@/lib/types";
 
 const CORES = {
@@ -8,6 +8,7 @@ const CORES = {
   ink: "--color-ink",
   envelope: "--color-envelope",
   seal: "--color-seal",
+  ink_soft: "--color-ink-soft",
 } as const;
 
 const TAMANHOS = {
@@ -18,6 +19,7 @@ const TAMANHOS = {
      rem. Os poucos pontos que medem em vw — os nomes na capa, a etiqueta do
      envelope — leem esta variável para crescer junto. */
   font_scale: "--font-scale",
+  text_weight: "--text-weight",
 } as const;
 
 /** Cores e tamanhos do painel viram custom properties; o resto cai no CSS. */
@@ -43,6 +45,11 @@ export function themeStyle(theme: Theme): CSSProperties {
     style["--serif"] = par.text;
     style["--handwriting"] = par.display;
   }
+
+  // A fonte do texto corrido pode ser trocada sozinha, mantendo os nomes do
+  // par escolhido.
+  const texto = theme.font_text ? TEXT_FONTS[theme.font_text] : undefined;
+  if (texto) style["--serif"] = texto.family;
 
   return style as CSSProperties;
 }

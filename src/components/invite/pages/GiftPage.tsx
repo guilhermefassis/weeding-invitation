@@ -84,7 +84,7 @@ export function GiftPage({ page, event, household }: Props) {
     <PageShell page={page} ornaments={false}>
       <header className="text-center">
         {page.eyebrow && (
-          <p className={`eyebrow ${dark ? "text-white/80" : "text-accent"}`}>
+          <p className={`eyebrow ${dark ? "text-white/80" : "text-accent-ink"}`}>
             {page.eyebrow}
           </p>
         )}
@@ -182,7 +182,7 @@ export function GiftPage({ page, event, household }: Props) {
           </p>
 
           {sent ? (
-            <p className="display mt-6 text-center text-[0.95rem] text-accent">
+            <p className="display mt-6 text-center text-[0.95rem] text-accent-ink">
               Recebemos seu recado. Obrigado de coração!
             </p>
           ) : (

@@ -38,7 +38,7 @@ export function CoverPage({ page, event, household }: Props) {
         {event.monogram && (
           <Monogram
             text={event.monogram}
-            className="mx-auto mb-7 block h-[4.6rem] w-44 text-accent"
+            className="mx-auto mb-7 block h-[4.6rem] w-44 text-accent-ink"
           />
         )}
 
@@ -107,7 +107,7 @@ export function CoverPage({ page, event, household }: Props) {
       {household?.greeting && (
         <p
           className={`display text-center text-[0.76rem] tracking-[0.22em] uppercase ${
-            dark ? "text-white/70" : "text-accent"
+            dark ? "text-white/70" : "text-accent-ink"
           }`}
         >
           {household.greeting}

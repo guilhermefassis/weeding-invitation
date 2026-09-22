@@ -26,7 +26,7 @@ export function LocationPage({
     <PageShell page={page} ornaments={false}>
       <div className="flex flex-1 flex-col text-center">
         {page.eyebrow && (
-          <p className={`eyebrow ${dark ? "text-white/80" : "text-accent"}`}>
+          <p className={`eyebrow ${dark ? "text-white/80" : "text-accent-ink"}`}>
             {page.eyebrow}
           </p>
         )}

@@ -1,6 +1,7 @@
 import { getAdminEvent } from "@/lib/admin-data";
 import { DEFAULT_WHATSAPP_TEMPLATE } from "@/lib/whatsapp";
 import { updateEvent } from "../actions";
+import { Colors } from "./Colors";
 import { EnvelopeSizes } from "./EnvelopeSizes";
 import { Typography } from "./Typography";
 
@@ -27,6 +28,7 @@ const THEME_FIELDS = [
   { name: "accent", label: "Destaque", fallback: "#9a8550" },
   { name: "paper", label: "Papel", fallback: "#f2efe7" },
   { name: "ink", label: "Texto", fallback: "#22302a" },
+  { name: "ink_soft", label: "Texto suave", fallback: "#46564c" },
   { name: "envelope", label: "Envelope", fallback: "#223028" },
   { name: "seal", label: "Lacre", fallback: "#9c8248" },
 ] as const;
@@ -97,26 +99,7 @@ export default async function EventPage() {
           Valem para o convite inteiro. O envelope e o lacre são a primeira
           tela, antes do livro abrir.
         </p>
-        <div className="grid gap-4 sm:grid-cols-3">
-          {THEME_FIELDS.map((field) => (
-            <label key={field.name} className="flex flex-col gap-1">
-              <span className="text-xs tracking-wide text-zinc-500 uppercase">
-                {field.label}
-              </span>
-              <span className="flex items-center gap-2">
-                <input
-                  type="color"
-                  name={`theme_${field.name}`}
-                  defaultValue={event.theme[field.name] ?? field.fallback}
-                  className="h-9 w-14 cursor-pointer rounded border border-zinc-300 bg-white"
-                />
-                <code className="text-xs text-zinc-400">
-                  {event.theme[field.name] ?? field.fallback}
-                </code>
-              </span>
-            </label>
-          ))}
-        </div>
+        <Colors theme={event.theme} campos={[...THEME_FIELDS]} />
       </section>
 
       <section className="flex flex-col gap-4">

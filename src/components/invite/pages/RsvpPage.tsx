@@ -52,7 +52,7 @@ export function RsvpPage({ page, household, deadline }: Props) {
     return (
       <PageShell page={page}>
         <div className="flex flex-1 flex-col justify-center text-center">
-          <p className={`eyebrow ${dark ? "text-white/80" : "text-accent"}`}>
+          <p className={`eyebrow ${dark ? "text-white/80" : "text-accent-ink"}`}>
             {page.eyebrow ?? "Confirmação de presença"}
           </p>
           <p
@@ -72,7 +72,7 @@ export function RsvpPage({ page, household, deadline }: Props) {
     <PageShell page={page} ornaments={false}>
       <header className="text-center">
         {page.eyebrow && (
-          <p className={`eyebrow ${dark ? "text-white/80" : "text-accent"}`}>
+          <p className={`eyebrow ${dark ? "text-white/80" : "text-accent-ink"}`}>
             {page.eyebrow}
           </p>
         )}
@@ -93,7 +93,7 @@ export function RsvpPage({ page, household, deadline }: Props) {
         {deadline && !closed && (
           <p
             className={`display mt-3 text-[0.8rem] tracking-[0.18em] uppercase ${
-              dark ? "text-white/70" : "text-accent"
+              dark ? "text-white/70" : "text-accent-ink"
             }`}
           >
             Confirme até {formatDeadline(deadline)}
@@ -103,7 +103,7 @@ export function RsvpPage({ page, household, deadline }: Props) {
 
       {closed ? (
         <div className="flex flex-1 flex-col items-center justify-center text-center">
-          <p className="script text-[2.4rem] text-accent">Prazo encerrado</p>
+          <p className="script text-[2.4rem] text-accent-ink">Prazo encerrado</p>
           <p
             className={`display mt-3 max-w-[20rem] text-[1rem] ${
               dark ? "text-white/85" : "text-ink-soft"
@@ -115,7 +115,7 @@ export function RsvpPage({ page, household, deadline }: Props) {
         </div>
       ) : state === "done" ? (
         <div className="flex flex-1 flex-col items-center justify-center text-center">
-          <p className="script text-[2.6rem] text-accent">Obrigado!</p>
+          <p className="script text-[2.6rem] text-accent-ink">Obrigado!</p>
           <p
             className={`display mt-3 max-w-[18rem] text-[1rem] ${
               dark ? "text-white/85" : "text-ink-soft"

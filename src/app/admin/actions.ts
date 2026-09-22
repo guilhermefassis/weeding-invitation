@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireUser } from "@/lib/auth";
-import { FONT_PAIRS } from "@/lib/fonts";
+import { FONT_PAIRS, TEXT_FONTS } from "@/lib/fonts";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { householdSlug } from "@/lib/slug";
 import { directMediaUrl } from "@/lib/media-url";
@@ -71,7 +71,7 @@ export async function updateEvent(form: FormData) {
     .filter((item) => Number.isFinite(item) && item > 0);
 
   const theme: Record<string, string | number> = {};
-  for (const key of ["accent", "paper", "ink", "envelope", "seal"]) {
+  for (const key of ["accent", "paper", "ink", "ink_soft", "envelope", "seal"]) {
     const value = text(form, `theme_${key}`);
     if (value) theme[key] = value;
   }
@@ -86,6 +86,12 @@ export async function updateEvent(form: FormData) {
 
   const par = text(form, "theme_font_pair");
   if (par && par in FONT_PAIRS) theme.font_pair = par;
+
+  const fonteTexto = text(form, "theme_font_text");
+  if (fonteTexto && fonteTexto in TEXT_FONTS) theme.font_text = fonteTexto;
+
+  const peso = Number(text(form, "theme_text_weight"));
+  if ([300, 400, 500].includes(peso)) theme.text_weight = peso;
 
   const fonte = Number(text(form, "theme_font_scale"));
   if (Number.isFinite(fonte) && fonte > 0) {

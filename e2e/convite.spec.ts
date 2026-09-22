@@ -75,6 +75,27 @@ test("cada página cabe na tela ou rola por dentro, sem esconder conteúdo", asy
   }
 });
 
+test("a fonte do tema alcança todo o convite, inclusive botões", async ({ page }) => {
+  // O body resolve var(--serif) com o valor dele e os filhos herdam a família
+  // já calculada: sem a declaração na raiz do convite, botões e campos ficavam
+  // com a fonte antiga enquanto o resto trocava.
+  await page.evaluate(() => {
+    const stage = document.querySelector<HTMLElement>(".stage")!;
+    stage.style.setProperty("--serif", "\"Fonte De Teste\"");
+  });
+
+  await next(page);
+  await abrir(page, "Confirmar presença", "Quem vem com você?");
+
+  const familias = await page.evaluate(() =>
+    [...document.querySelectorAll(".page[data-kind='rsvp'] button, .page[data-kind='rsvp'] p")]
+      .map((el) => getComputedStyle(el).fontFamily.split(",")[0].replace(/"/g, "")),
+  );
+
+  expect(familias.length).toBeGreaterThan(3);
+  for (const familia of familias) expect(familia).toBe("Fonte De Teste");
+});
+
 test("a capa traz o casal, a data e a saudação da família", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Guilherme & Fernanda" })).toBeVisible();
   await expect(page.getByText("12  |  12  |  2026")).toBeVisible();

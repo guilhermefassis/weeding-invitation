@@ -6,9 +6,14 @@
   --color-paper: #f2efe7;
   --color-paper-deep: #e2ded1;
   --color-ink: #22302a;
-  --color-ink-soft: #5d6b62;
+  --color-ink-soft: #46564c;
   --color-accent: #9a8550;
   --color-accent-soft: #c9bd97;
+  /* O dourado tem contraste de vitrine, não de leitura: 3,1:1 sobre o papel.
+     Filetes e ornamentos ficam com ele; texto usa esta versão escurecida, que
+     sobe para 5,5:1. O valor aqui só registra a cor no Tailwind — o convite
+     recalcula a partir do destaque escolhido no painel. */
+  --color-accent-ink: #6c5d38;
   --color-backdrop: #18211c;
   --color-envelope: #223028;
   --color-seal: #9c8248;
@@ -49,6 +54,11 @@ body:has(.stage) {
 /* ------------------------------------------------------------ o livro */
 
 .stage {
+  --color-accent-ink: color-mix(in srgb, var(--color-accent) 75%, black);
+  /* O body resolve var(--serif) com o valor dele; os filhos herdam a família
+     já calculada e ignorariam o tema. Declarar aqui faz a variável do tema
+     valer para tudo que está dentro do convite, inclusive botões e campos. */
+  font-family: var(--serif);
   position: relative;
   display: flex;
   align-items: center;
@@ -334,7 +344,7 @@ body:has(.stage) {
 
 .display {
   font-family: var(--serif);
-  font-weight: 300;
+  font-weight: var(--text-weight, 400);
   letter-spacing: 0.02em;
 }
 
@@ -358,6 +368,8 @@ body:has(.stage) {
 /* ---------------------------------------------------------- forms */
 
 .field {
+  /* Campo e botão não herdam fonte por padrão em todo navegador. */
+  font-family: inherit;
   border: 1px solid rgba(69, 59, 51, 0.18);
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.7);
@@ -372,6 +384,7 @@ body:has(.stage) {
 }
 
 .btn {
+  font-family: inherit;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -387,13 +400,15 @@ body:has(.stage) {
 }
 
 .btn-primary {
-  background: var(--color-accent);
+  /* O dourado cheio deixava o texto branco em 3,6:1. Com a versão de leitura
+     o botão vira um bloco sólido, em 6,3:1. */
+  background: var(--color-accent-ink);
   color: #fffaf4;
 }
 
 .btn-ghost {
   background: color-mix(in srgb, var(--color-accent) 12%, transparent);
-  color: var(--color-accent);
+  color: var(--color-accent-ink);
 }
 
 .btn:disabled {

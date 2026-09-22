@@ -27,9 +27,15 @@ sempre que houver monograma cadastrado; sem ele, o convite abre direto na capa.
 
 ### Cores e temas
 
-Em `/admin/evento` dá para trocar as cinco cores do convite: destaque, papel,
-texto, envelope e lacre. Elas viram custom properties aplicadas na raiz do
-convite, então valem para tudo — filetes, ícones, botões e o lacre.
+Em `/admin/evento` dá para trocar as seis cores do convite: destaque, papel,
+texto, texto suave, envelope e lacre. Elas viram custom properties aplicadas na
+raiz do convite, então valem para tudo — filetes, ícones, botões e o lacre.
+
+O painel mostra o contraste de cada combinação enquanto você escolhe, com o
+corte de 4,5:1 do WCAG AA: é o mínimo para texto corrido ser legível num
+celular, ao sol. O dourado de destaque não chega lá (3,1:1 sobre o papel), então
+o convite usa uma versão escurecida dele no texto e guarda o tom cheio para
+filetes e ornamentos, onde não há o que ler.
 
 A seção **Tipografia** troca a fonte do convite inteiro. A escolha é de
 combinação, não de peça solta: cada opção traz a fonte dos nomes e a do texto
@@ -43,8 +49,17 @@ e quem aumentou a fonte no navegador continua sendo respeitado. Os poucos
 pontos que medem em `vw` (os nomes na capa, a etiqueta do envelope) leem a
 variável `--font-scale` para crescer na mesma proporção.
 
+Dá para trocar só a fonte do texto corrido e manter os nomes do estilo
+escolhido, e o **peso do texto** (leve, normal, forte) é o caminho mais curto
+quando o convite está apagado demais.
+
 Só o par padrão é pré-carregado; os outros entram com `preload: false`, então a
 declaração vai no CSS mas o navegador só baixa a família que o tema usa.
+
+A fonte é declarada na raiz do convite, não só nas classes de título. O `body`
+resolve `var(--serif)` com o valor dele e os filhos herdam a família já
+calculada — sem essa declaração, botões e campos continuavam com a fonte antiga
+enquanto o resto do convite trocava.
 
 Na mesma tela, a seção **Envelope** ajusta o tamanho do lacre, das iniciais
 gravadas nele e das iniciais em relevo, de 50% a 180% do padrão. São
