@@ -31,6 +31,21 @@ Em `/admin/evento` dá para trocar as cinco cores do convite: destaque, papel,
 texto, envelope e lacre. Elas viram custom properties aplicadas na raiz do
 convite, então valem para tudo — filetes, ícones, botões e o lacre.
 
+A seção **Tipografia** troca a fonte do convite inteiro. A escolha é de
+combinação, não de peça solta: cada opção traz a fonte dos nomes e a do texto
+que foram pensadas para conviver — Clássico, Romântico, Editorial, Moderno e
+Rústico. Os cartões são desenhados na própria fonte, então dá para escolher
+olhando, e o tamanho do texto vai de 85% a 125%.
+
+O tamanho sai do `font-size` da raiz, em porcentagem: como o convite mede tudo
+em `rem`, texto e espaçamento crescem juntos e a página continua equilibrada —
+e quem aumentou a fonte no navegador continua sendo respeitado. Os poucos
+pontos que medem em `vw` (os nomes na capa, a etiqueta do envelope) leem a
+variável `--font-scale` para crescer na mesma proporção.
+
+Só o par padrão é pré-carregado; os outros entram com `preload: false`, então a
+declaração vai no CSS mas o navegador só baixa a família que o tema usa.
+
 Na mesma tela, a seção **Envelope** ajusta o tamanho do lacre, das iniciais
 gravadas nele e das iniciais em relevo, de 50% a 180% do padrão. São
 multiplicadores, não medidas fixas: o convite continua se adaptando à tela do

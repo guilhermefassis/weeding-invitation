@@ -510,7 +510,7 @@ body:has(.stage) {
   max-width: 46%;
   padding: 9px 14px 9px clamp(52px, 15vw, 66px);
   font-family: var(--serif);
-  font-size: clamp(0.82rem, 3.6vw, 1rem);
+  font-size: clamp(0.82rem, calc(3.6vw * var(--font-scale, 1)), 1rem);
   color: #2f2a26;
   background: linear-gradient(105deg, #f4efe6, #fffdf9);
   box-shadow: 0 10px 22px -14px rgba(0, 0, 0, 0.9);

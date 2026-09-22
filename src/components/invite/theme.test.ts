@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { FONT_PAIRS, fontPair } from "@/lib/fonts";
 import { themeStyle } from "./theme";
 
 describe("themeStyle", () => {
@@ -31,5 +32,39 @@ describe("themeStyle", () => {
 
   it("ignora tamanho inválido em vez de escrever NaN no CSS", () => {
     expect(themeStyle({ seal_scale: Number.NaN })).toEqual({});
+  });
+
+  it("aplica as duas fontes do par escolhido", () => {
+    const style = themeStyle({ font_pair: "romantico" });
+    expect(style).toMatchObject({
+      "--serif": FONT_PAIRS.romantico.text,
+      "--handwriting": FONT_PAIRS.romantico.display,
+    });
+  });
+
+  it("ignora par desconhecido em vez de deixar o convite sem fonte", () => {
+    expect(themeStyle({ font_pair: "nao-existe" })).toEqual({});
+  });
+
+  it("publica o tamanho do texto para quem mede em vw", () => {
+    expect(themeStyle({ font_scale: 1.15 })).toEqual({ "--font-scale": "1.15" });
+  });
+});
+
+describe("fontPair", () => {
+  it("cai no padrão quando a chave não existe ou está vazia", () => {
+    expect(fontPair(undefined)).toBe(FONT_PAIRS.classico);
+    expect(fontPair("nao-existe")).toBe(FONT_PAIRS.classico);
+  });
+
+  it("devolve o par pedido", () => {
+    expect(fontPair("editorial")).toBe(FONT_PAIRS.editorial);
+  });
+
+  it("todo par tem as duas fontes definidas", () => {
+    for (const [chave, par] of Object.entries(FONT_PAIRS)) {
+      expect(par.text, chave).toBeTruthy();
+      expect(par.display, chave).toBeTruthy();
+    }
   });
 });

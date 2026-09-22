@@ -53,7 +53,7 @@ export function CoverPage({ page, event, household }: Props) {
         )}
 
         <h1
-          className={`script text-[clamp(2.6rem,12.5vw,3.9rem)] leading-[1.05] ${
+          className={`script text-[clamp(2.6rem,calc(12.5vw*var(--font-scale,1)),3.9rem)] leading-[1.05] ${
             dark ? "text-white" : "text-ink"
           }`}
         >

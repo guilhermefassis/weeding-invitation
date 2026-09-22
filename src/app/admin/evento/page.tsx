@@ -2,6 +2,7 @@ import { getAdminEvent } from "@/lib/admin-data";
 import { DEFAULT_WHATSAPP_TEMPLATE } from "@/lib/whatsapp";
 import { updateEvent } from "../actions";
 import { EnvelopeSizes } from "./EnvelopeSizes";
+import { Typography } from "./Typography";
 
 /** ISO -> valor aceito pelo input datetime-local, no fuso de São Paulo. */
 function toLocalInput(iso: string): string {
@@ -116,6 +117,15 @@ export default async function EventPage() {
             </label>
           ))}
         </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-lg font-medium">Tipografia</h2>
+        <p className="-mt-2 text-sm text-zinc-500">
+          A fonte vem em par: uma para os nomes e títulos manuscritos, outra
+          para o texto. Escolha a combinação e o tamanho.
+        </p>
+        <Typography theme={event.theme} couple={event.couple_names} />
       </section>
 
       <section className="flex flex-col gap-4">

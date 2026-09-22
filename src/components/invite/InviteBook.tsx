@@ -30,8 +30,18 @@ export function InviteBook({ invite }: { invite: Invite }) {
   const targets = useMemo(() => buildTargets(pages), [pages]);
   const [opened, setOpened] = useState(false);
 
+  // O convite mede tudo em rem, então o tamanho do texto sai da raiz do
+  // documento — e em %, para quem aumentou a fonte no navegador continuar
+  // sendo respeitado. A rota do convite é a página inteira, nada mais é
+  // afetado.
+  const escala = event.theme.font_scale;
+
   return (
     <div className="stage" style={themeStyle(event.theme)}>
+      {typeof escala === "number" && escala !== 1 && (
+        <style>{`:root{font-size:${(escala * 100).toFixed(1)}%}`}</style>
+      )}
+
       <div className="stage-inner">
         {!opened && event.monogram && (
           <Envelope

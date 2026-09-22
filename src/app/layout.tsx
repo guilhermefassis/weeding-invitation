@@ -1,18 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Pinyon_Script } from "next/font/google";
+import { cormorant, pinyon } from "@/lib/fonts";
 import "./globals.css";
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  variable: "--font-cormorant",
-});
-
-const pinyon = Pinyon_Script({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-script",
-});
 
 export const metadata: Metadata = {
   title: "Convite",

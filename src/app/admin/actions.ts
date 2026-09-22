@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireUser } from "@/lib/auth";
+import { FONT_PAIRS } from "@/lib/fonts";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { householdSlug } from "@/lib/slug";
 import { directMediaUrl } from "@/lib/media-url";
@@ -81,6 +82,14 @@ export async function updateEvent(form: FormData) {
     if (Number.isFinite(value) && value > 0) {
       theme[key] = Math.min(1.8, Math.max(0.5, value));
     }
+  }
+
+  const par = text(form, "theme_font_pair");
+  if (par && par in FONT_PAIRS) theme.font_pair = par;
+
+  const fonte = Number(text(form, "theme_font_scale"));
+  if (Number.isFinite(fonte) && fonte > 0) {
+    theme.font_scale = Math.min(1.25, Math.max(0.85, fonte));
   }
 
   const { error } = await supabase
