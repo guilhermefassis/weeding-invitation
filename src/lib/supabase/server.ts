@@ -12,8 +12,13 @@ export async function createSessionClient() {
       cookies: {
         getAll: () => cookieStore.getAll(),
         setAll: (items) => {
-          for (const { name, value, options } of items) {
-            cookieStore.set(name, value, options);
+          try {
+            for (const { name, value, options } of items) {
+              cookieStore.set(name, value, options);
+            }
+          } catch {
+            // Server Component não pode gravar cookie. A renovação do token
+            // acontece de novo na próxima server action, que pode gravar.
           }
         },
       },

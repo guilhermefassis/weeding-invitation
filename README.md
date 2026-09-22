@@ -164,11 +164,27 @@ o livro, confirma a família, gera e copia o PIX, testa os links de rota e
 confere que o painel exige login. Na primeira vez, rode `npx playwright install
 chromium` para baixar o navegador.
 
-## Deploy
+## Deploy na Vercel
 
-Vercel, apontando para este repositório. As mesmas variáveis do `.env.local`
-vão em Environment Variables. Depois, em `/admin/evento`, preencha o "endereço
-do site" para os links das famílias saírem com o domínio certo.
+1. [vercel.com/new](https://vercel.com/new) → importe o repositório. Ela
+   reconhece Next.js sozinha; não mexa em build command nem output directory.
+2. Em **Environment Variables**, só estas três:
+
+   | Variável | Valor |
+   | --- | --- |
+   | `NEXT_PUBLIC_SUPABASE_URL` | a URL do projeto |
+   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | a chave `sb_publishable_...` |
+   | `SUPABASE_SERVICE_ROLE_KEY` | a chave `sb_secret_...` |
+
+   O `SUPABASE_ACCESS_TOKEN` e a senha do banco **não vão** — são só do
+   `db:setup`, que roda da sua máquina.
+3. Confira em Settings → Git que a **Production Branch** é a que você usa.
+4. Depois do primeiro deploy, em `/admin/evento`, preencha o "endereço do site"
+   com a URL da Vercel. É de lá que sai o link de cada família no WhatsApp; sem
+   isso os links saem com o host da requisição.
+
+Sem as variáveis o deploy sobe do mesmo jeito, em modo demonstração — serve
+para ver o convite antes de ligar o banco.
 
 ## Próximos passos
 
