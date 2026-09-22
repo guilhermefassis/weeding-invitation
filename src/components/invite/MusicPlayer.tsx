@@ -39,7 +39,7 @@ export function MusicPlayer({ src }: { src: string }) {
         type="button"
         onClick={toggle}
         aria-label={playing ? "Desligar a música" : "Ligar a música"}
-        className="absolute top-4 right-4 z-[80] grid h-10 w-10 place-items-center rounded-full bg-paper/75 text-ink-soft shadow-[0_6px_18px_-8px_rgba(0,0,0,0.5)] backdrop-blur"
+        className="absolute top-[max(16px,env(safe-area-inset-top))] right-4 z-[80] grid h-10 w-10 place-items-center rounded-full bg-paper/75 text-ink-soft shadow-[0_6px_18px_-8px_rgba(0,0,0,0.5)] backdrop-blur"
       >
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
           <path

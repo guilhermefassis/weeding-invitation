@@ -68,6 +68,21 @@ legenda vale só quando você envia um arquivo por vez, senão a mesma frase
 cairia embaixo de todas as fotos. Vídeos entram na mesma grade e aparecem no
 convite com controles.
 
+### Tela cheia no celular
+
+O livro ocupa exatamente a área visível: a altura vem de `svh`, a única
+unidade que já conta com as barras do Safari na tela — com `dvh` o iPhone
+resolve a altura como se elas estivessem recolhidas e o rodapé do convite fica
+escondido embaixo da barra de endereço. O documento não rola; quem rola é o
+texto dentro da página, então as barras não somem e voltam a cada gesto. E
+`viewport-fit=cover` mais `env(safe-area-inset-*)` mantêm a navegação e o botão
+de música longe do entalhe e do indicador de home.
+
+Para tirar as barras do navegador de vez, o convite tem manifest e abre em
+modo aplicativo: no iPhone, **Compartilhar → Adicionar à Tela de Início**; no
+Android, **⋮ → Instalar aplicativo**. Salvo assim, ele abre sem barra nenhuma e
+volta direto para o convite da família, não para a home do site.
+
 ### Confirmação de presença
 
 O link único identifica a família, então o convidado não digita nada: ele vê

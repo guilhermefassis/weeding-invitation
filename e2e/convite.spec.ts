@@ -42,6 +42,39 @@ test.describe("envelope", () => {
   });
 });
 
+test("o livro ocupa a tela inteira, sem sobra nem corte", async ({ page }) => {
+  const medidas = await page.evaluate(() => {
+    const nav = document.querySelector(".book-nav")!.getBoundingClientRect();
+    return {
+      altura: window.innerHeight,
+      documento: document.documentElement.scrollHeight,
+      livro: document.querySelector(".stage-inner")!.getBoundingClientRect().height,
+      navAbaixo: nav.bottom,
+    };
+  });
+
+  // O documento não rola: quem rola é o texto dentro da página. É isso que
+  // impede o Safari do iPhone de esconder as barras e cortar o rodapé.
+  expect(medidas.documento).toBe(medidas.altura);
+  expect(medidas.livro).toBe(medidas.altura);
+  // A navegação tem que caber na área visível, não ficar embaixo dela.
+  expect(medidas.navAbaixo).toBeLessThanOrEqual(medidas.altura);
+});
+
+test("cada página cabe na tela ou rola por dentro, sem esconder conteúdo", async ({ page }) => {
+  const sobra = await page.evaluate(() =>
+    [...document.querySelectorAll(".page-content")].map((el) => ({
+      rolavel: getComputedStyle(el).overflowY,
+      escondido: el.scrollHeight > el.clientHeight,
+    })),
+  );
+
+  // Nenhuma página pode transbordar sem poder rolar — seria conteúdo perdido.
+  for (const pagina of sobra) {
+    if (pagina.escondido) expect(pagina.rolavel).toBe("auto");
+  }
+});
+
 test("a capa traz o casal, a data e a saudação da família", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Guilherme & Fernanda" })).toBeVisible();
   await expect(page.getByText("12  |  12  |  2026")).toBeVisible();

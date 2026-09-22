@@ -38,6 +38,14 @@ body {
   overscroll-behavior: none;
 }
 
+/* O convite ocupa a tela inteira e rola por dentro das páginas. Deixar o
+   documento rolar junto faz o Safari do iPhone esconder/mostrar as barras e
+   cortar o rodapé do livro no meio do gesto. */
+body:has(.stage) {
+  overflow: hidden;
+  height: 100svh;
+}
+
 /* ------------------------------------------------------------ o livro */
 
 .stage {
@@ -45,7 +53,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100dvh;
+  /* svh (viewport "pequeno") é o único que já conta com as barras do Safari
+     visíveis. Com dvh, o iPhone resolve a altura com as barras recolhidas e o
+     rodapé do livro fica embaixo da barra de endereço. */
+  min-height: 100vh;
+  min-height: 100svh;
   width: 100%;
   padding: 0;
   background:
@@ -56,13 +68,14 @@ body {
   position: relative;
   width: 100%;
   max-width: 460px;
-  height: 100dvh;
-  max-height: 100dvh;
+  height: 100vh;
+  height: 100svh;
+  max-height: 100svh;
 }
 
 @media (min-width: 640px) {
   .stage-inner {
-    height: min(92dvh, 920px);
+    height: min(92svh, 920px);
     border-radius: 18px;
     box-shadow:
       0 40px 80px -30px rgba(0, 0, 0, 0.7),
@@ -221,8 +234,9 @@ body {
   flex-direction: column;
   height: 100%;
   width: 100%;
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  /* Quem rola é o texto, não a página: assim a foto de fundo, o filete e o
+     ramo ficam parados no lugar em vez de subirem junto. */
+  overflow: hidden;
   background: var(--color-paper);
 }
 
@@ -253,7 +267,22 @@ body {
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding: clamp(28px, 7vw, 44px) clamp(22px, 6vw, 36px) 76px;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding:
+    calc(clamp(28px, 7vw, 44px) + env(safe-area-inset-top))
+    clamp(22px, 6vw, 36px)
+    calc(76px + env(safe-area-inset-bottom));
+}
+
+/* Tela baixa (iPhone SE, ou qualquer iPhone com as barras do Safari à mostra):
+   aperta o respiro antes de deixar a página rolar. */
+@media (max-height: 740px) {
+  .page-content {
+    padding-top: calc(20px + env(safe-area-inset-top));
+    padding-bottom: calc(66px + env(safe-area-inset-bottom));
+  }
 }
 
 /* Fibra do papel: ruído fino gerado no próprio CSS, sem imagem. */
