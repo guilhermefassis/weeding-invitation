@@ -13,6 +13,12 @@ describe("themeStyle", () => {
     });
   });
 
+  it("ignora a cor em branco, deixando o padrão do CSS valer", () => {
+    expect(themeStyle({ accent: "", ink: "#111" })).toEqual({
+      "--color-ink": "#111",
+    });
+  });
+
   it("transforma os tamanhos do envelope em multiplicadores", () => {
     expect(
       themeStyle({ seal_scale: 1.4, monogram_scale: 0.8, emboss_scale: 1 }),
