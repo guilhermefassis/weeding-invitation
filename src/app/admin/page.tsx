@@ -28,21 +28,28 @@ export default async function AdminHome() {
   const counts = countGuests(guests, event.rsvp_deadline);
 
   const stats = [
-    { label: "Famílias", value: households.length },
-    { label: "Convidados", value: counts.total },
-    { label: "Confirmados", value: counts.confirmed },
+    { label: "Famílias", value: households.length, href: "/admin/convidados" },
+    { label: "Convidados", value: counts.total, href: "/admin/lista" },
+    {
+      label: "Confirmados",
+      value: counts.confirmed,
+      href: "/admin/lista?filtro=confirmados",
+    },
     {
       label: closed ? "Não vão (inclui sem resposta)" : "Recusaram",
       value: counts.declined,
+      href: "/admin/lista?filtro=recusados",
     },
     {
       label: closed ? "Não responderam a tempo" : "Sem resposta",
       value: counts.silent,
+      href: "/admin/lista?filtro=sem-resposta",
     },
     {
       label: "Convites enviados",
       value: households.filter((household) => household.invite_status === "sent")
         .length,
+      href: "/admin/convidados",
     },
   ];
 
@@ -68,15 +75,16 @@ export default async function AdminHome() {
 
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {stats.map((stat) => (
-          <div
+          <Link
             key={stat.label}
-            className="rounded-xl border border-zinc-200 bg-white p-4"
+            href={stat.href}
+            className="rounded-xl border border-zinc-200 bg-white p-4 transition hover:border-zinc-400"
           >
             <p className="text-2xl font-medium">{stat.value}</p>
             <p className="text-xs tracking-wide text-zinc-500 uppercase">
               {stat.label}
             </p>
-          </div>
+          </Link>
         ))}
       </section>
 

@@ -15,6 +15,7 @@ virar produto depois.
 | `/entrar` | Login dos anfitriões (Supabase Auth). |
 | `/admin` | Resumo: confirmações, recados, presentes. |
 | `/admin/convidados` | Famílias, convidados, link único e disparo do convite. |
+| `/admin/lista` | Lista de presença: quem vai, quem não vai, quem não respondeu. |
 | `/admin/paginas` | Conteúdo, mídia e ordem das páginas. |
 | `/admin/evento` | Data, local, PIX e mensagem do WhatsApp. |
 
@@ -130,6 +131,21 @@ Existe um **prazo de confirmação** (`/admin/evento`). Até lá, a página most
 no servidor, então não adianta tentar por fora — e quem não respondeu passa a
 contar como ausente no painel. A resposta original continua guardada: o painel
 diferencia "não vai" de "não respondeu no prazo".
+
+### Lista de presença
+
+`/admin/convidados` é a tela de cadastro: cada família fica dobrada, e para
+saber quem confirmou é preciso abrir uma por uma. `/admin/lista` responde a
+outra pergunta — quem vai à festa — numa lista só, pessoa por pessoa, com
+filtros de "vão", "não vão" e "sem resposta". Os contadores do resumo levam
+direto para o filtro correspondente.
+
+A lista separa **não vai** de **não respondeu no prazo**: as duas contam como
+ausentes para o buffet, mas só uma delas ainda vale um telefonema. Dá para
+baixar a lista em planilha (o filtro atual vai junto) para mandar ao buffet ou
+montar as mesas. O arquivo sai com BOM, senão o Excel abre os acentos errados,
+e nomes que começam com `=` ganham um apóstrofo na frente para não virarem
+fórmula ao abrir.
 
 ### Presente via PIX
 
