@@ -118,6 +118,77 @@ export default async function EventPage() {
           convite só muda depois de salvar.
         </p>
         <EnvelopeSizes theme={event.theme} monogram={event.monogram} />
+
+        <fieldset className="grid gap-4 rounded-xl bg-zinc-50 p-4 sm:grid-cols-2">
+          <legend className="px-1 text-xs tracking-wide text-zinc-500 uppercase">
+            Arte do envelope
+          </legend>
+
+          {event.theme.envelope_image && (
+            <div className="flex items-start gap-3 sm:col-span-2">
+              {/* A arte vem do Storage, fora do otimizador do next/image. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={event.theme.envelope_image}
+                alt=""
+                className="h-28 w-20 rounded-lg border border-zinc-200 object-cover"
+              />
+              <label className="flex items-center gap-2 text-sm text-zinc-600">
+                <input type="checkbox" name="envelope_image_remove" />
+                Remover a arte e voltar ao envelope de papel
+              </label>
+            </div>
+          )}
+
+          <label className="flex flex-col gap-1">
+            <span className="text-xs text-zinc-500">Enviar uma imagem</span>
+            <input
+              type="file"
+              name="envelope_file"
+              accept="image/*"
+              className="text-sm"
+            />
+          </label>
+
+          <label className="flex flex-col gap-1">
+            <span className="text-xs text-zinc-500">Ou colar um endereço</span>
+            <input
+              className="rounded-lg border border-zinc-300 px-3 py-2 text-sm"
+              name="theme_envelope_image"
+              defaultValue={event.theme.envelope_image ?? ""}
+            />
+          </label>
+
+          <label className="flex flex-col gap-1">
+            <span className="text-xs text-zinc-500">Como usar</span>
+            <select
+              className="rounded-lg border border-zinc-300 px-3 py-2 text-sm"
+              name="theme_envelope_image_mode"
+              defaultValue={event.theme.envelope_image_mode ?? "fundo"}
+            >
+              <option value="fundo">Fundo — mantém a aba e o relevo por cima</option>
+              <option value="arte">Arte pronta — só a imagem, o lacre e a etiqueta</option>
+            </select>
+          </label>
+
+          <label className="flex flex-col gap-1">
+            <span className="text-xs text-zinc-500">
+              Escurecer a imagem ({event.theme.envelope_overlay ?? 0.35})
+            </span>
+            <input
+              type="range"
+              name="theme_envelope_overlay"
+              min="0"
+              max="0.9"
+              step="0.05"
+              defaultValue={event.theme.envelope_overlay ?? 0.35}
+            />
+            <span className="text-xs text-zinc-400">
+              O lacre e o nome da família ficam por cima da imagem. Numa arte
+              clara, sem escurecer, eles somem.
+            </span>
+          </label>
+        </fieldset>
       </section>
 
       <section className="flex flex-col gap-4">

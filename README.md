@@ -26,6 +26,18 @@ as iniciais do casal e uma etiqueta com o nome da família — a mesma saudaçã
 usada no WhatsApp. Um toque rompe o lacre e revela o livro. O envelope aparece
 sempre que houver monograma cadastrado; sem ele, o convite abre direto na capa.
 
+### Arte do envelope
+
+Em `/admin/evento` dá para enviar uma imagem própria para o envelope, em dois
+modos. **Fundo** mantém a aba, as dobras e o relevo por cima — serve para
+textura e papel estampado. **Arte pronta** tira tudo isso e deixa só a sua
+imagem, o lacre e a etiqueta com o nome da família, para quem desenhou o
+envelope inteiro em outro programa.
+
+Há um controle de escurecimento porque o lacre e o nome da família ficam por
+cima da imagem: numa arte clara, sem véu, eles somem. Com arte e sem monograma
+o envelope continua aparecendo, só que sem o lacre — que é feito das iniciais.
+
 ### Cores e temas
 
 Em `/admin/evento` dá para trocar as seis cores do convite: destaque, papel,

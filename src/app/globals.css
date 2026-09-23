@@ -443,9 +443,40 @@ body:has(.stage) {
   transition: opacity 500ms ease, transform 700ms cubic-bezier(0.3, 0, 0.2, 1);
 }
 
+/* Arte personalizada: ocupa o envelope inteiro, atrás de tudo. */
+.envelope-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Véu sobre a arte, para o lacre e a etiqueta não sumirem numa foto clara. */
+.envelope-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(12, 10, 8, 0.35) 0%,
+    rgba(12, 10, 8, 0.75) 100%
+  );
+}
+
+/* Arte pronta: o papel sai de cena e fica só a imagem, o lacre e a etiqueta. */
+.envelope[data-arte] .envelope-flap,
+.envelope[data-arte] .envelope-emboss,
+.envelope[data-arte]::after {
+  display: none;
+}
+
 /* A aba do envelope, dobrada para baixo. */
 .envelope-flap {
   position: absolute;
+  z-index: 1;
   inset: 0 0 auto;
   height: 52%;
   clip-path: polygon(0 0, 100% 0, 50% 100%);
@@ -463,6 +494,7 @@ body:has(.stage) {
 .envelope::after {
   content: "";
   position: absolute;
+  z-index: 1;
   inset: auto 0 0;
   height: 46%;
   clip-path: polygon(0 100%, 0 0, 50% 46%, 100% 0, 100% 100%);
@@ -477,6 +509,7 @@ body:has(.stage) {
 /* Monograma em relevo seco: só sombra e luz, sem tinta. */
 .envelope-emboss {
   position: absolute;
+  z-index: 3;
   top: 9%;
   left: 0;
   right: 0;
@@ -495,6 +528,7 @@ body:has(.stage) {
 
 .envelope-hint {
   position: absolute;
+  z-index: 3;
   top: 40%;
   left: 50%;
   width: min(88%, 360px);
@@ -521,7 +555,7 @@ body:has(.stage) {
   position: absolute;
   top: 58%;
   left: 50%;
-  z-index: 1;
+  z-index: 4;
   max-width: 46%;
   padding: 9px 14px 9px clamp(52px, 15vw, 66px);
   font-family: var(--serif);
@@ -541,7 +575,7 @@ body:has(.stage) {
   position: absolute;
   top: 58%;
   left: 50%;
-  z-index: 2;
+  z-index: 5;
   width: calc(var(--seal-base, clamp(92px, 27vw, 120px)) * var(--seal-scale, 1));
   aspect-ratio: 1;
   transform: translate(-50%, -50%);

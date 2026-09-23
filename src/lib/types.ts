@@ -78,6 +78,12 @@ export type Theme = {
   font_scale?: number;
   /** Peso do texto corrido: 300 leve, 400 normal, 500 forte. */
   text_weight?: number;
+  /** Arte personalizada do envelope. */
+  envelope_image?: string;
+  /** "fundo" mantém a aba e o relevo por cima; "arte" deixa só a imagem. */
+  envelope_image_mode?: "fundo" | "arte";
+  /** Escurecimento sobre a imagem, para o lacre e a etiqueta continuarem lendo. */
+  envelope_overlay?: number;
 };
 
 export type EventRecord = {

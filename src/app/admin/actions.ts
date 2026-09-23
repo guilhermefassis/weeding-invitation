@@ -93,6 +93,28 @@ export async function updateEvent(form: FormData) {
   const peso = Number(text(form, "theme_text_weight"));
   if ([300, 400, 500].includes(peso)) theme.text_weight = peso;
 
+  // Arte do envelope: o arquivo enviado ganha do endereço colado, e a caixa
+  // de remover ganha dos dois.
+  const arteAtual = text(form, "theme_envelope_image");
+  const arteArquivo = form.get("envelope_file");
+  const removerArte = form.get("envelope_image_remove") === "on";
+
+  if (!removerArte) {
+    const arte =
+      arteArquivo instanceof File && arteArquivo.size > 0
+        ? await uploadMedia(arteArquivo, "envelope")
+        : directMediaUrl(arteAtual);
+    if (arte) theme.envelope_image = arte;
+  }
+
+  const modo = text(form, "theme_envelope_image_mode");
+  if (modo === "fundo" || modo === "arte") theme.envelope_image_mode = modo;
+
+  const veu = Number(text(form, "theme_envelope_overlay"));
+  if (Number.isFinite(veu) && veu >= 0) {
+    theme.envelope_overlay = Math.min(0.9, veu);
+  }
+
   const fonte = Number(text(form, "theme_font_scale"));
   if (Number.isFinite(fonte) && fonte > 0) {
     theme.font_scale = Math.min(1.25, Math.max(0.85, fonte));

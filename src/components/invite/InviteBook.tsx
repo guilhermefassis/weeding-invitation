@@ -43,10 +43,14 @@ export function InviteBook({ invite }: { invite: Invite }) {
       )}
 
       <div className="stage-inner">
-        {!opened && event.monogram && (
+        {/* Envelope com monograma, com arte própria, ou com os dois. */}
+        {!opened && (event.monogram || event.theme.envelope_image) && (
           <Envelope
-            monogram={event.monogram}
+            monogram={event.monogram ?? ""}
             recipient={household?.greeting ?? household?.family_name ?? null}
+            image={event.theme.envelope_image}
+            mode={event.theme.envelope_image_mode}
+            overlay={event.theme.envelope_overlay}
             onOpen={() => setOpened(true)}
           />
         )}
