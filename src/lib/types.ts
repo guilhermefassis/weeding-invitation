@@ -84,6 +84,10 @@ export type Theme = {
   envelope_image_mode?: "fundo" | "arte";
   /** Escurecimento sobre a imagem, para o lacre e a etiqueta continuarem lendo. */
   envelope_overlay?: number;
+  /** "preencher" ocupa a tela e corta; "inteira" mostra a arte sem cortar. */
+  envelope_image_fit?: "preencher" | "inteira";
+  /** Que parte da arte segurar quando o corte é inevitável. */
+  envelope_image_focus?: "topo" | "centro" | "base";
 };
 
 export type EventRecord = {

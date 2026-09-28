@@ -115,6 +115,16 @@ export async function updateEvent(form: FormData) {
     theme.envelope_overlay = Math.min(0.9, veu);
   }
 
+  const ajuste = text(form, "theme_envelope_image_fit");
+  if (ajuste === "preencher" || ajuste === "inteira") {
+    theme.envelope_image_fit = ajuste;
+  }
+
+  const foco = text(form, "theme_envelope_image_focus");
+  if (foco === "topo" || foco === "centro" || foco === "base") {
+    theme.envelope_image_focus = foco;
+  }
+
   const fonte = Number(text(form, "theme_font_scale"));
   if (Number.isFinite(fonte) && fonte > 0) {
     theme.font_scale = Math.min(1.25, Math.max(0.85, fonte));

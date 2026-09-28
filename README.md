@@ -38,6 +38,14 @@ Há um controle de escurecimento porque o lacre e o nome da família ficam por
 cima da imagem: numa arte clara, sem véu, eles somem. Com arte e sem monograma
 o envelope continua aparecendo, só que sem o lacre — que é feito das iniciais.
 
+Celular nenhum tem o formato exato da arte, então o ajuste é uma escolha, não
+um acerto automático: **preencher a tela** ocupa tudo e corta o que sobra (com
+foco escolhível no topo, no centro ou na base), e **mostrar a arte inteira**
+não corta nada e deixa uma faixa da cor do envelope. No segundo modo o lacre, a
+etiqueta e o "toque para abrir" acompanham a caixa da arte em vez da tela — a
+proporção é lida do arquivo quando ele carrega, então eles não ficam boiando
+sobre a faixa vazia.
+
 ### Cores e temas
 
 Em `/admin/evento` dá para trocar as seis cores do convite: destaque, papel,

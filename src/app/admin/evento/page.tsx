@@ -172,6 +172,41 @@ export default async function EventPage() {
           </label>
 
           <label className="flex flex-col gap-1">
+            <span className="text-xs text-zinc-500">Em telas de outro formato</span>
+            <select
+              className="rounded-lg border border-zinc-300 px-3 py-2 text-sm"
+              name="theme_envelope_image_fit"
+              defaultValue={event.theme.envelope_image_fit ?? "preencher"}
+            >
+              <option value="preencher">Preencher a tela — pode cortar as bordas</option>
+              <option value="inteira">Mostrar a arte inteira — pode sobrar borda</option>
+            </select>
+            <span className="text-xs text-zinc-400">
+              Celular nenhum tem o formato da sua arte. Ou ela preenche a tela e
+              perde um pedaço, ou aparece inteira e sobra uma faixa da cor do
+              envelope.
+            </span>
+          </label>
+
+          <label className="flex flex-col gap-1">
+            <span className="text-xs text-zinc-500">
+              Ao cortar, segurar qual parte
+            </span>
+            <select
+              className="rounded-lg border border-zinc-300 px-3 py-2 text-sm"
+              name="theme_envelope_image_focus"
+              defaultValue={event.theme.envelope_image_focus ?? "centro"}
+            >
+              <option value="centro">O centro</option>
+              <option value="topo">O topo</option>
+              <option value="base">A base</option>
+            </select>
+            <span className="text-xs text-zinc-400">
+              Vale só para o modo que preenche a tela.
+            </span>
+          </label>
+
+          <label className="flex flex-col gap-1">
             <span className="text-xs text-zinc-500">
               Escurecer a imagem ({event.theme.envelope_overlay ?? 0.35})
             </span>

@@ -454,10 +454,44 @@ body:has(.stage) {
 }
 
 /* Véu sobre a arte, para o lacre e a etiqueta não sumirem numa foto clara. */
-.envelope-veil {
+/*
+ * Palco: a área que a arte ocupa. Preenchendo a tela, é a tela inteira; com a
+ * arte aparecendo por completo, é a caixa que sobra depois de ela caber. O
+ * lacre, a etiqueta e o "toque para abrir" moram aqui dentro, então acompanham
+ * a arte em vez de flutuarem sobre a borda vazia.
+ */
+.envelope-palco {
   position: absolute;
   inset: 0;
   z-index: 2;
+}
+
+.envelope[data-ajuste="inteira"] .envelope-bg {
+  object-fit: contain;
+}
+
+/* Com a arte inteira sobra uma faixa em volta. O brilho de cima do envelope
+   marcaria onde a arte acaba; chapado, a faixa some contra uma arte de fundo
+   da mesma cor. */
+.envelope[data-ajuste="inteira"] {
+  background: var(--color-envelope);
+}
+
+.envelope[data-ajuste="inteira"] .envelope-palco {
+  /* inset 0 + margin auto centra nos dois eixos; os máximos fazem a caixa
+     encolher até caber — exatamente onde o object-fit: contain põe a arte. */
+  margin: auto;
+  aspect-ratio: var(--arte-aspecto);
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.envelope-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   pointer-events: none;
   background: linear-gradient(
     180deg,
@@ -509,7 +543,7 @@ body:has(.stage) {
 /* Monograma em relevo seco: só sombra e luz, sem tinta. */
 .envelope-emboss {
   position: absolute;
-  z-index: 3;
+  z-index: 1;
   top: 9%;
   left: 0;
   right: 0;
@@ -528,7 +562,7 @@ body:has(.stage) {
 
 .envelope-hint {
   position: absolute;
-  z-index: 3;
+  z-index: 1;
   top: 40%;
   left: 50%;
   width: min(88%, 360px);
@@ -555,7 +589,7 @@ body:has(.stage) {
   position: absolute;
   top: 58%;
   left: 50%;
-  z-index: 4;
+  z-index: 2;
   max-width: 46%;
   padding: 9px 14px 9px clamp(52px, 15vw, 66px);
   font-family: var(--serif);
@@ -575,7 +609,7 @@ body:has(.stage) {
   position: absolute;
   top: 58%;
   left: 50%;
-  z-index: 5;
+  z-index: 3;
   width: calc(var(--seal-base, clamp(92px, 27vw, 120px)) * var(--seal-scale, 1));
   aspect-ratio: 1;
   transform: translate(-50%, -50%);

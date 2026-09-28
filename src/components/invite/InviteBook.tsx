@@ -51,6 +51,8 @@ export function InviteBook({ invite }: { invite: Invite }) {
             image={event.theme.envelope_image}
             mode={event.theme.envelope_image_mode}
             overlay={event.theme.envelope_overlay}
+            fit={event.theme.envelope_image_fit}
+            focus={event.theme.envelope_image_focus}
             onOpen={() => setOpened(true)}
           />
         )}
